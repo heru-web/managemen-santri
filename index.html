@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sistem Manajemen Pesantren AL- Maa</title>
+    <title>Sistem Manajemen Pesantren Al-Hikmah</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -691,6 +691,46 @@
         }
       }
 
+      /* Pagination */
+      .pagination-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+      }
+
+      .pagination-info {
+        color: #666;
+      }
+
+      .pagination-buttons {
+        display: flex;
+        gap: 5px;
+      }
+
+      .pagination-btn {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        background: white;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+
+      .pagination-btn:hover:not(:disabled) {
+        background: var(--light-bg);
+      }
+
+      .pagination-btn:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+
+      .pagination-btn.active {
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+      }
+
       /* Responsive */
       @media (max-width: 768px) {
         .sidebar {
@@ -940,6 +980,15 @@
               <!-- Data akan dimuat dengan JavaScript -->
             </tbody>
           </table>
+          <!-- Pagination for Santri -->
+          <div class="pagination-container">
+            <div class="pagination-info" id="santriPaginationInfo">
+              Menampilkan 0 dari 0 data
+            </div>
+            <div class="pagination-buttons" id="santriPaginationButtons">
+              <!-- Pagination buttons will be generated here -->
+            </div>
+          </div>
         </div>
       </section>
 
@@ -986,6 +1035,15 @@
               <!-- Data akan dimuat dengan JavaScript -->
             </tbody>
           </table>
+          <!-- Pagination for Guru -->
+          <div class="pagination-container">
+            <div class="pagination-info" id="guruPaginationInfo">
+              Menampilkan 0 dari 0 data
+            </div>
+            <div class="pagination-buttons" id="guruPaginationButtons">
+              <!-- Pagination buttons will be generated here -->
+            </div>
+          </div>
         </div>
       </section>
 
@@ -1203,6 +1261,15 @@
               <!-- Data akan dimuat dengan JavaScript -->
             </tbody>
           </table>
+          <!-- Pagination for Kegiatan -->
+          <div class="pagination-container">
+            <div class="pagination-info" id="kegiatanPaginationInfo">
+              Menampilkan 0 dari 0 data
+            </div>
+            <div class="pagination-buttons" id="kegiatanPaginationButtons">
+              <!-- Pagination buttons will be generated here -->
+            </div>
+          </div>
         </div>
       </section>
 
@@ -1249,6 +1316,15 @@
               <!-- Data akan dimuat dengan JavaScript -->
             </tbody>
           </table>
+          <!-- Pagination for Fasilitas -->
+          <div class="pagination-container">
+            <div class="pagination-info" id="fasilitasPaginationInfo">
+              Menampilkan 0 dari 0 data
+            </div>
+            <div class="pagination-buttons" id="fasilitasPaginationButtons">
+              <!-- Pagination buttons will be generated here -->
+            </div>
+          </div>
         </div>
       </section>
 
@@ -1295,6 +1371,15 @@
               <!-- Data akan dimuat dengan JavaScript -->
             </tbody>
           </table>
+          <!-- Pagination for Transaksi -->
+          <div class="pagination-container">
+            <div class="pagination-info" id="transaksiPaginationInfo">
+              Menampilkan 0 dari 0 data
+            </div>
+            <div class="pagination-buttons" id="transaksiPaginationButtons">
+              <!-- Pagination buttons will be generated here -->
+            </div>
+          </div>
         </div>
       </section>
 
@@ -1338,6 +1423,15 @@
               <!-- Data akan dimuat dengan JavaScript -->
             </tbody>
           </table>
+          <!-- Pagination for Laporan -->
+          <div class="pagination-container">
+            <div class="pagination-info" id="laporanPaginationInfo">
+              Menampilkan 0 dari 0 data
+            </div>
+            <div class="pagination-buttons" id="laporanPaginationButtons">
+              <!-- Pagination buttons will be generated here -->
+            </div>
+          </div>
         </div>
       </section>
 
@@ -1734,61 +1828,21 @@
       const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR0dHp2bGdzd3FpZWdseWVhc295Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1MDkxMzUsImV4cCI6MjA3NzA4NTEzNX0.-xGPp_F76nEbqAkQXjOnpJwW_z12JMvF3x75ljf81OE";
       const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-      // ================= TAMBAHKAN KODE DI BAWAH INI =================
-
-      // Saat halaman dimuat, periksa status sesi
-      document.addEventListener("DOMContentLoaded", async function () {
-        // Periksa sesi saat ini
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-
-        if (session) {
-          // Pengguna sudah login
-          currentUser = session.user;
-          closeModal("loginModal");
-
-          // Muat data pengguna
-          await loadUserProfile();
-
-          // Muat data lainnya
-          await loadAllData();
-        } else {
-          // Pengguna belum login, tampilkan modal login
-          document.getElementById("loginModal").classList.add("active");
-        }
-      });
-
-      // Pantau perubahan status autentikasi
-      supabase.auth.onAuthStateChange(async (event, session) => {
-        if (event === "SIGNED_IN" && session) {
-          currentUser = session.user;
-          closeModal("loginModal");
-
-          // Muat data pengguna
-          await loadUserProfile();
-
-          // Muat data lainnya
-          await loadAllData();
-        } else if (event === "SIGNED_OUT") {
-          currentUser = null;
-          // Tampilkan modal login
-          document.getElementById("loginModal").classList.add("active");
-        }
-      });
-
-      // ================= AKHIR KODE TAMBAHAN =================
-
       // State aplikasi
       let currentUser = null;
-      let dataSantri = [];
-      let dataGuru = [];
+      // Hapus variabel array global yang tidak perlu, data akan dikelola per halaman
       let dataKelas = [];
-      let dataKegiatan = [];
-      let dataFasilitas = [];
-      let dataTransaksi = [];
-      let dataLaporan = [];
       let dataPengaturan = {};
+
+      // Pagination state
+      const paginationState = {
+        santri: { page: 1, pageSize: 10, count: 0 },
+        guru: { page: 1, pageSize: 10, count: 0 },
+        kegiatan: { page: 1, pageSize: 10, count: 0 },
+        fasilitas: { page: 1, pageSize: 10, count: 0 },
+        transaksi: { page: 1, pageSize: 10, count: 0 },
+        laporan: { page: 1, pageSize: 10, count: 0 },
+      };
 
       // Fungsi untuk menampilkan toast
       function showToast(message, type = "success") {
@@ -1864,8 +1918,8 @@
           // Load data user
           await loadUserProfile();
 
-          // Load data lainnya
-          await loadAllData();
+          // Load data dashboard saja saat awal
+          await loadDashboardData();
         } catch (err) {
           errorDiv.textContent = "Terjadi kesalahan saat login";
           errorDiv.classList.remove("d-none");
@@ -1921,42 +1975,73 @@
         }
       }
 
-      // Fungsi load semua data
-      async function loadAllData() {
+      // OPTIMASI: Hanya memuat data yang diperlukan untuk dashboard
+      async function loadDashboardData() {
         showLoading();
-
         try {
-          await Promise.all([
-            loadSantri(),
-            loadGuru(),
-            loadKelas(),
-            loadKegiatan(),
-            loadFasilitas(),
-            loadTransaksi(),
-            loadLaporan(),
-            loadPengaturan(),
+          const currentMonth = new Date().getMonth();
+          const currentYear = new Date().getFullYear();
+
+          // Gunakan count untuk menghemat bandwidth, kita hanya butuh jumlahnya
+          const [
+            { count: santriCount },
+            { count: guruCount },
+            { data: kegiatanData },
+            { data: transaksiData },
+          ] = await Promise.all([
+            supabase.from("santri").select("id", { count: "exact", head: true }),
+            supabase.from("guru").select("id", { count: "exact", head: true }),
+            supabase
+              .from("kegiatan")
+              .select("id")
+              .gte("tanggal", new Date(currentYear, currentMonth, 1))
+              .lte("tanggal", new Date(currentYear, currentMonth + 1, 0)),
+            supabase
+              .from("transaksi")
+              .select("jumlah")
+              .eq("jenis", "pemasukan")
+              .gte("tanggal", new Date(currentYear, currentMonth, 1))
+              .lte("tanggal", new Date(currentYear, currentMonth + 1, 0)),
           ]);
 
           // Update dashboard
-          updateDashboard();
+          document.getElementById("totalSantriCount").textContent = santriCount || 0;
+          document.getElementById("totalGuruCount").textContent = guruCount || 0;
+          document.getElementById("totalKegiatanCount").textContent =
+            kegiatanData.length || 0;
+
+          const totalPemasukan = transaksiData.reduce(
+            (sum, t) => sum + parseFloat(t.jumlah),
+            0
+          );
+          document.getElementById(
+            "totalPemasukanCount"
+          ).textContent = `Rp ${formatNumber(totalPemasukan)}`;
         } catch (err) {
-          console.error("Error loading data:", err);
-          showToast("Terjadi kesalahan saat memuat data", "error");
+          console.error("Error loading dashboard data:", err);
+          showToast("Terjadi kesalahan saat memuat data dashboard", "error");
         } finally {
           hideLoading();
         }
       }
 
-      // Fungsi load data santri
-      async function loadSantri() {
+      // OPTIMASI: Fungsi load data santri dengan pagination
+      async function loadSantri(page = 1) {
+        showLoading();
         try {
-          const { data, error } = await supabase.from("santri").select(`
+          const { from, to } = getPaginationRange(page, paginationState.santri.pageSize);
+          
+          const { data, error, count } = await supabase
+            .from("santri")
+            .select(`
                         *,
                         kelas (
                             id,
                             nama
                         )
-                    `);
+                    `, { count: 'exact' })
+            .range(from, to)
+            .order('nama_lengkap');
 
           if (error) {
             console.error("Error loading santri:", error);
@@ -1964,20 +2049,25 @@
             return;
           }
 
-          dataSantri = data;
-          updateSantriTable();
+          paginationState.santri.count = count || 0;
+          paginationState.santri.page = page;
+
+          updateSantriTable(data);
+          updatePagination('santri');
         } catch (err) {
           console.error("Error loading santri:", err);
           showToast("Terjadi kesalahan saat memuat data santri", "error");
+        } finally {
+          hideLoading();
         }
       }
 
       // Fungsi update tabel santri
-      function updateSantriTable() {
+      function updateSantriTable(data) {
         const tbody = document.getElementById("santriTableBody");
         tbody.innerHTML = "";
 
-        dataSantri.forEach((santri) => {
+        data.forEach((santri) => {
           const row = document.createElement("tr");
           row.innerHTML = `
                     <td>${santri.nis}</td>
@@ -2006,10 +2096,17 @@
         });
       }
 
-      // Fungsi load data guru
-      async function loadGuru() {
+      // OPTIMASI: Fungsi load data guru dengan pagination
+      async function loadGuru(page = 1) {
+        showLoading();
         try {
-          const { data, error } = await supabase.from("guru").select("*");
+          const { from, to } = getPaginationRange(page, paginationState.guru.pageSize);
+
+          const { data, error, count } = await supabase
+            .from("guru")
+            .select("*", { count: 'exact' })
+            .range(from, to)
+            .order('nama_lengkap');
 
           if (error) {
             console.error("Error loading guru:", error);
@@ -2017,20 +2114,25 @@
             return;
           }
 
-          dataGuru = data;
-          updateGuruTable();
+          paginationState.guru.count = count || 0;
+          paginationState.guru.page = page;
+
+          updateGuruTable(data);
+          updatePagination('guru');
         } catch (err) {
           console.error("Error loading guru:", err);
           showToast("Terjadi kesalahan saat memuat data guru", "error");
+        } finally {
+          hideLoading();
         }
       }
 
       // Fungsi update tabel guru
-      function updateGuruTable() {
+      function updateGuruTable(data) {
         const tbody = document.getElementById("guruTableBody");
         tbody.innerHTML = "";
 
-        dataGuru.forEach((guru) => {
+        data.forEach((guru) => {
           const row = document.createElement("tr");
           row.innerHTML = `
                     <td>${guru.nip}</td>
@@ -2098,10 +2200,17 @@
         });
       }
 
-      // Fungsi load data kegiatan
-      async function loadKegiatan() {
+      // OPTIMASI: Fungsi load data kegiatan dengan pagination
+      async function loadKegiatan(page = 1) {
+        showLoading();
         try {
-          const { data, error } = await supabase.from("kegiatan").select("*");
+          const { from, to } = getPaginationRange(page, paginationState.kegiatan.pageSize);
+
+          const { data, error, count } = await supabase
+            .from("kegiatan")
+            .select("*", { count: 'exact' })
+            .range(from, to)
+            .order('tanggal', { ascending: false });
 
           if (error) {
             console.error("Error loading kegiatan:", error);
@@ -2109,20 +2218,25 @@
             return;
           }
 
-          dataKegiatan = data;
-          updateKegiatanTable();
+          paginationState.kegiatan.count = count || 0;
+          paginationState.kegiatan.page = page;
+
+          updateKegiatanTable(data);
+          updatePagination('kegiatan');
         } catch (err) {
           console.error("Error loading kegiatan:", err);
           showToast("Terjadi kesalahan saat memuat data kegiatan", "error");
+        } finally {
+          hideLoading();
         }
       }
 
       // Fungsi update tabel kegiatan
-      function updateKegiatanTable() {
+      function updateKegiatanTable(data) {
         const tbody = document.getElementById("kegiatanTableBody");
         tbody.innerHTML = "";
 
-        dataKegiatan.forEach((kegiatan) => {
+        data.forEach((kegiatan) => {
           const row = document.createElement("tr");
           row.innerHTML = `
                     <td>${formatDate(kegiatan.tanggal)}</td>
@@ -2149,10 +2263,17 @@
         });
       }
 
-      // Fungsi load data fasilitas
-      async function loadFasilitas() {
+      // OPTIMASI: Fungsi load data fasilitas dengan pagination
+      async function loadFasilitas(page = 1) {
+        showLoading();
         try {
-          const { data, error } = await supabase.from("fasilitas").select("*");
+          const { from, to } = getPaginationRange(page, paginationState.fasilitas.pageSize);
+
+          const { data, error, count } = await supabase
+            .from("fasilitas")
+            .select("*", { count: 'exact' })
+            .range(from, to)
+            .order('nama');
 
           if (error) {
             console.error("Error loading fasilitas:", error);
@@ -2160,20 +2281,25 @@
             return;
           }
 
-          dataFasilitas = data;
-          updateFasilitasTable();
+          paginationState.fasilitas.count = count || 0;
+          paginationState.fasilitas.page = page;
+
+          updateFasilitasTable(data);
+          updatePagination('fasilitas');
         } catch (err) {
           console.error("Error loading fasilitas:", err);
           showToast("Terjadi kesalahan saat memuat data fasilitas", "error");
+        } finally {
+          hideLoading();
         }
       }
 
       // Fungsi update tabel fasilitas
-      function updateFasilitasTable() {
+      function updateFasilitasTable(data) {
         const tbody = document.getElementById("fasilitasTableBody");
         tbody.innerHTML = "";
 
-        dataFasilitas.forEach((fasilitas) => {
+        data.forEach((fasilitas) => {
           const row = document.createElement("tr");
           row.innerHTML = `
                     <td>${fasilitas.nama}</td>
@@ -2200,13 +2326,17 @@
         });
       }
 
-      // Fungsi load data transaksi
-      async function loadTransaksi() {
+      // OPTIMASI: Fungsi load data transaksi dengan pagination
+      async function loadTransaksi(page = 1) {
+        showLoading();
         try {
-          const { data, error } = await supabase
+          const { from, to } = getPaginationRange(page, paginationState.transaksi.pageSize);
+
+          const { data, error, count } = await supabase
             .from("transaksi")
-            .select("*")
-            .order("tanggal", { ascending: false });
+            .select("*", { count: 'exact' })
+            .range(from, to)
+            .order('tanggal', { ascending: false });
 
           if (error) {
             console.error("Error loading transaksi:", error);
@@ -2214,20 +2344,25 @@
             return;
           }
 
-          dataTransaksi = data;
-          updateTransaksiTable();
+          paginationState.transaksi.count = count || 0;
+          paginationState.transaksi.page = page;
+
+          updateTransaksiTable(data);
+          updatePagination('transaksi');
         } catch (err) {
           console.error("Error loading transaksi:", err);
           showToast("Terjadi kesalahan saat memuat data transaksi", "error");
+        } finally {
+          hideLoading();
         }
       }
 
       // Fungsi update tabel transaksi
-      function updateTransaksiTable() {
+      function updateTransaksiTable(data) {
         const tbody = document.getElementById("transaksiTableBody");
         tbody.innerHTML = "";
 
-        dataTransaksi.forEach((transaksi) => {
+        data.forEach((transaksi) => {
           const row = document.createElement("tr");
           row.innerHTML = `
                     <td>${formatDate(transaksi.tanggal)}</td>
@@ -2256,10 +2391,17 @@
         });
       }
 
-      // Fungsi load data laporan
-      async function loadLaporan() {
+      // OPTIMASI: Fungsi load data laporan dengan pagination
+      async function loadLaporan(page = 1) {
+        showLoading();
         try {
-          const { data, error } = await supabase.from("laporan").select("*");
+          const { from, to } = getPaginationRange(page, paginationState.laporan.pageSize);
+
+          const { data, error, count } = await supabase
+            .from("laporan")
+            .select("*", { count: 'exact' })
+            .range(from, to)
+            .order('created_at', { ascending: false });
 
           if (error) {
             console.error("Error loading laporan:", error);
@@ -2267,20 +2409,25 @@
             return;
           }
 
-          dataLaporan = data;
-          updateLaporanTable();
+          paginationState.laporan.count = count || 0;
+          paginationState.laporan.page = page;
+
+          updateLaporanTable(data);
+          updatePagination('laporan');
         } catch (err) {
           console.error("Error loading laporan:", err);
           showToast("Terjadi kesalahan saat memuat data laporan", "error");
+        } finally {
+          hideLoading();
         }
       }
 
       // Fungsi update tabel laporan
-      function updateLaporanTable() {
+      function updateLaporanTable(data) {
         const tbody = document.getElementById("laporanTableBody");
         tbody.innerHTML = "";
 
-        dataLaporan.forEach((laporan) => {
+        data.forEach((laporan) => {
           const row = document.createElement("tr");
           row.innerHTML = `
                     <td>${laporan.nama}</td>
@@ -2341,46 +2488,6 @@
           dataPengaturan.email || "info@alhikmah.sch.id";
         document.getElementById("pengaturanTelepon").value =
           dataPengaturan.telepon || "(021) 1234567";
-      }
-
-      // Fungsi update dashboard
-      function updateDashboard() {
-        // Update total santri
-        document.getElementById("totalSantriCount").textContent =
-          dataSantri.length;
-
-        // Update total guru
-        document.getElementById("totalGuruCount").textContent = dataGuru.length;
-
-        // Update total kegiatan bulan ini
-        const currentMonth = new Date().getMonth();
-        const currentYear = new Date().getFullYear();
-        const kegiatanThisMonth = dataKegiatan.filter((k) => {
-          const date = new Date(k.tanggal);
-          return (
-            date.getMonth() === currentMonth &&
-            date.getFullYear() === currentYear
-          );
-        });
-        document.getElementById("totalKegiatanCount").textContent =
-          kegiatanThisMonth.length;
-
-        // Update total pemasukan bulan ini
-        const pemasukanThisMonth = dataTransaksi.filter((t) => {
-          const date = new Date(t.tanggal);
-          return (
-            date.getMonth() === currentMonth &&
-            date.getFullYear() === currentYear &&
-            t.jenis === "pemasukan"
-          );
-        });
-        const totalPemasukan = pemasukanThisMonth.reduce(
-          (sum, t) => sum + parseFloat(t.jumlah),
-          0
-        );
-        document.getElementById(
-          "totalPemasukanCount"
-        ).textContent = `Rp ${formatNumber(totalPemasukan)}`;
       }
 
       // Fungsi save santri
@@ -2463,7 +2570,7 @@
           document.getElementById("santriStatus").value = "aktif";
 
           // Reload data
-          await loadSantri();
+          await loadSantri(paginationState.santri.page);
         } catch (err) {
           showToast("Terjadi kesalahan saat menyimpan data", "error");
         } finally {
@@ -2535,7 +2642,7 @@
           showToast("Data santri berhasil dihapus!", "success");
 
           // Reload data
-          await loadSantri();
+          await loadSantri(paginationState.santri.page);
         } catch (err) {
           showToast("Terjadi kesalahan saat menghapus data", "error");
         } finally {
@@ -2615,7 +2722,7 @@
           document.getElementById("pengajarStatus").value = "aktif";
 
           // Reload data
-          await loadGuru();
+          await loadGuru(paginationState.guru.page);
         } catch (err) {
           showToast("Terjadi kesalahan saat menyimpan data", "error");
         } finally {
@@ -2684,7 +2791,7 @@
           showToast("Data guru berhasil dihapus!", "success");
 
           // Reload data
-          await loadGuru();
+          await loadGuru(paginationState.guru.page);
         } catch (err) {
           showToast("Terjadi kesalahan saat menghapus data", "error");
         } finally {
@@ -2764,7 +2871,7 @@
           document.getElementById("kegiatanDeskripsi").value = "";
 
           // Reload data
-          await loadKegiatan();
+          await loadKegiatan(paginationState.kegiatan.page);
         } catch (err) {
           showToast("Terjadi kesalahan saat menyimpan data", "error");
         } finally {
@@ -2837,7 +2944,7 @@
           showToast("Data kegiatan berhasil dihapus!", "success");
 
           // Reload data
-          await loadKegiatan();
+          await loadKegiatan(paginationState.kegiatan.page);
         } catch (err) {
           showToast("Terjadi kesalahan saat menghapus data", "error");
         } finally {
@@ -2913,7 +3020,7 @@
           document.getElementById("fasilitasDeskripsi").value = "";
 
           // Reload data
-          await loadFasilitas();
+          await loadFasilitas(paginationState.fasilitas.page);
         } catch (err) {
           showToast("Terjadi kesalahan saat menyimpan data", "error");
         } finally {
@@ -2987,7 +3094,7 @@
           showToast("Data fasilitas berhasil dihapus!", "success");
 
           // Reload data
-          await loadFasilitas();
+          await loadFasilitas(paginationState.fasilitas.page);
         } catch (err) {
           showToast("Terjadi kesalahan saat menghapus data", "error");
         } finally {
@@ -3061,7 +3168,7 @@
           document.getElementById("transaksiJumlah").value = "";
 
           // Reload data
-          await loadTransaksi();
+          await loadTransaksi(paginationState.transaksi.page);
         } catch (err) {
           showToast("Terjadi kesalahan saat menyimpan data", "error");
         } finally {
@@ -3130,7 +3237,7 @@
           showToast("Data transaksi berhasil dihapus!", "success");
 
           // Reload data
-          await loadTransaksi();
+          await loadTransaksi(paginationState.transaksi.page);
         } catch (err) {
           showToast("Terjadi kesalahan saat menghapus data", "error");
         } finally {
@@ -3207,7 +3314,7 @@
         }
       }
 
-      // Fungsi load data absen guru
+      // OPTIMASI: Fungsi load data absen guru
       async function loadAbsenGuru() {
         const tanggal = document.getElementById("absenTanggal").value;
         const waktu = document.getElementById("absenWaktu").value;
@@ -3301,7 +3408,7 @@
         }
       }
 
-      // Fungsi load data absen santri
+      // OPTIMASI: Fungsi load data absen santri
       async function loadAbsenSantri() {
         const tanggal = document.getElementById("absenTanggal").value;
         const waktu = document.getElementById("absenWaktu").value;
@@ -3407,7 +3514,7 @@
         }
       }
 
-      // Fungsi save absen guru
+      // OPTIMASI: Fungsi save absen guru menggunakan upsert
       async function saveAbsenGuru() {
         const tanggal = document.getElementById("absenTanggal").value;
         const waktu = document.getElementById("absenWaktu").value;
@@ -3422,61 +3529,39 @@
         try {
           // Get all guru rows
           const rows = document.querySelectorAll("#absenGuruTableBody tr");
+          const attendanceData = [];
 
-          for (const row of rows) {
+          // Get all guru data for mapping
+          const { data: guruData } = await supabase.from("guru").select("id, nama_lengkap");
+
+          rows.forEach((row) => {
             const guruName = row.querySelector("td:nth-child(2)").textContent;
             const status = row.querySelector("select").value;
             const notes = row.querySelector('input[type="text"]').value;
 
             // Find guru by name
-            const guru = dataGuru.find((g) => g.nama_lengkap === guruName);
-            if (!guru) continue;
-
-            // Check if attendance already exists
-            const { data: existingData, error: checkError } = await supabase
-              .from("absensi_guru")
-              .select("*")
-              .eq("guru_id", guru.id)
-              .eq("tanggal", tanggal)
-              .eq("sesi", waktu);
-
-            if (checkError) {
-              console.error("Error checking attendance:", checkError);
-              continue;
+            const guru = guruData.find((g) => g.nama_lengkap === guruName);
+            if (guru) {
+              attendanceData.push({
+                guru_id: guru.id,
+                tanggal: tanggal,
+                sesi: waktu,
+                status: status,
+                keterangan: notes,
+              });
             }
+          });
 
-            if (existingData.length > 0) {
-              // Update existing attendance
-              const { error: updateError } = await supabase
-                .from("absensi_guru")
-                .update({
-                  status: status,
-                  keterangan: notes,
-                  updated_at: new Date().toISOString(),
-                })
-                .eq("id", existingData[0].id);
+          // Use upsert to insert or update all records in a single operation
+          const { error } = await supabase
+            .from("absensi_guru")
+            .upsert(attendanceData, {
+              onConflict: "guru_id, tanggal, sesi",
+            });
 
-              if (updateError) {
-                console.error("Error updating attendance:", updateError);
-              }
-            } else {
-              // Insert new attendance
-              const { error: insertError } = await supabase
-                .from("absensi_guru")
-                .insert([
-                  {
-                    guru_id: guru.id,
-                    tanggal: tanggal,
-                    sesi: waktu,
-                    status: status,
-                    keterangan: notes,
-                  },
-                ]);
-
-              if (insertError) {
-                console.error("Error inserting attendance:", insertError);
-              }
-            }
+          if (error) {
+            showToast("Error: " + error.message, "error");
+            return;
           }
 
           showToast("Absen guru berhasil disimpan!", "success");
@@ -3487,7 +3572,7 @@
         }
       }
 
-      // Fungsi save absen santri
+      // OPTIMASI: Fungsi save absen santri menggunakan upsert
       async function saveAbsenSantri() {
         const tanggal = document.getElementById("absenTanggal").value;
         const waktu = document.getElementById("absenWaktu").value;
@@ -3502,63 +3587,39 @@
         try {
           // Get all santri rows
           const rows = document.querySelectorAll("#absenSantriTableBody tr");
+          const attendanceData = [];
 
-          for (const row of rows) {
+          // Get all santri data for mapping
+          const { data: santriData } = await supabase.from("santri").select("id, nama_lengkap");
+
+          rows.forEach((row) => {
             const santriName = row.querySelector("td:nth-child(2)").textContent;
             const status = row.querySelector("select").value;
             const notes = row.querySelector('input[type="text"]').value;
 
             // Find santri by name
-            const santri = dataSantri.find(
-              (s) => s.nama_lengkap === santriName
-            );
-            if (!santri) continue;
-
-            // Check if attendance already exists
-            const { data: existingData, error: checkError } = await supabase
-              .from("absensi_santri")
-              .select("*")
-              .eq("santri_id", santri.id)
-              .eq("tanggal", tanggal)
-              .eq("sesi", waktu);
-
-            if (checkError) {
-              console.error("Error checking attendance:", checkError);
-              continue;
+            const santri = santriData.find((s) => s.nama_lengkap === santriName);
+            if (santri) {
+              attendanceData.push({
+                santri_id: santri.id,
+                tanggal: tanggal,
+                sesi: waktu,
+                status: status,
+                keterangan: notes,
+              });
             }
+          });
 
-            if (existingData.length > 0) {
-              // Update existing attendance
-              const { error: updateError } = await supabase
-                .from("absensi_santri")
-                .update({
-                  status: status,
-                  keterangan: notes,
-                  updated_at: new Date().toISOString(),
-                })
-                .eq("id", existingData[0].id);
+          // Use upsert to insert or update all records in a single operation
+          const { error } = await supabase
+            .from("absensi_santri")
+            .upsert(attendanceData, {
+              onConflict: "santri_id, tanggal, sesi",
+            });
 
-              if (updateError) {
-                console.error("Error updating attendance:", updateError);
-              }
-            } else {
-              // Insert new attendance
-              const { error: insertError } = await supabase
-                .from("absensi_santri")
-                .insert([
-                  {
-                    santri_id: santri.id,
-                    tanggal: tanggal,
-                    sesi: waktu,
-                    status: status,
-                    keterangan: notes,
-                  },
-                ]);
-
-              if (insertError) {
-                console.error("Error inserting attendance:", insertError);
-              }
-            }
+          if (error) {
+            showToast("Error: " + error.message, "error");
+            return;
           }
 
           showToast("Absen santri berhasil disimpan!", "success");
@@ -3660,40 +3721,64 @@
         doc.line(14, yPosition, 195, yPosition);
         yPosition += 5;
 
-        // Data santri
-        dataSantri.forEach((santri, index) => {
-          if (yPosition > 270) {
-            doc.addPage();
-            yPosition = 20;
-          }
+        // Get current page data
+        const from = (paginationState.santri.page - 1) * paginationState.santri.pageSize;
+        const to = from + paginationState.santri.pageSize - 1;
 
-          doc.setFontSize(10);
-          doc.text(`${index + 1}`, 14, yPosition);
-          doc.text(santri.nis, 35, yPosition);
-          doc.text(santri.nama_lengkap, 60, yPosition);
-          doc.text(santri.kelas ? santri.kelas.nama : "-", 120, yPosition);
-          doc.text(
-            santri.status === "aktif" ? "Aktif" : "Tidak Aktif",
-            160,
-            yPosition
-          );
+        // Get all data for export (not just current page)
+        showLoading();
+        supabase
+          .from("santri")
+          .select(`
+            *,
+            kelas (
+                id,
+                nama
+            )
+        `)
+          .then(({ data, error }) => {
+            if (error) {
+              showToast("Error loading data for export: " + error.message, "error");
+              hideLoading();
+              return;
+            }
 
-          yPosition += 7;
-        });
+            // Data santri
+            data.forEach((santri, index) => {
+              if (yPosition > 270) {
+                doc.addPage();
+                yPosition = 20;
+              }
 
-        // Footer
-        const pageCount = doc.internal.getNumberOfPages();
-        for (let i = 1; i <= pageCount; i++) {
-          doc.setPage(i);
-          doc.setFontSize(8);
-          doc.text(`Halaman ${i} dari ${pageCount}`, 105, 285, {
-            align: "center",
+              doc.setFontSize(10);
+              doc.text(`${index + 1}`, 14, yPosition);
+              doc.text(santri.nis, 35, yPosition);
+              doc.text(santri.nama_lengkap, 60, yPosition);
+              doc.text(santri.kelas ? santri.kelas.nama : "-", 120, yPosition);
+              doc.text(
+                santri.status === "aktif" ? "Aktif" : "Tidak Aktif",
+                160,
+                yPosition
+              );
+
+              yPosition += 7;
+            });
+
+            // Footer
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+              doc.setPage(i);
+              doc.setFontSize(8);
+              doc.text(`Halaman ${i} dari ${pageCount}`, 105, 285, {
+                align: "center",
+              });
+            }
+
+            // Save PDF
+            doc.save("data_santri.pdf");
+            showToast("Export PDF berhasil!", "success");
+            hideLoading();
           });
-        }
-
-        // Save PDF
-        doc.save("data_santri.pdf");
-        showToast("Export PDF berhasil!", "success");
       }
 
       // Fungsi export PDF untuk data guru
@@ -3722,40 +3807,54 @@
         doc.line(14, yPosition, 195, yPosition);
         yPosition += 5;
 
-        // Data guru
-        dataGuru.forEach((guru, index) => {
-          if (yPosition > 270) {
-            doc.addPage();
-            yPosition = 20;
-          }
+        // Get all data for export (not just current page)
+        showLoading();
+        supabase
+          .from("guru")
+          .select("*")
+          .then(({ data, error }) => {
+            if (error) {
+              showToast("Error loading data for export: " + error.message, "error");
+              hideLoading();
+              return;
+            }
 
-          doc.setFontSize(10);
-          doc.text(`${index + 1}`, 14, yPosition);
-          doc.text(guru.nip, 35, yPosition);
-          doc.text(guru.nama_lengkap, 60, yPosition);
-          doc.text(guru.mata_pelajaran || "-", 120, yPosition);
-          doc.text(
-            guru.status === "aktif" ? "Aktif" : "Tidak Aktif",
-            160,
-            yPosition
-          );
+            // Data guru
+            data.forEach((guru, index) => {
+              if (yPosition > 270) {
+                doc.addPage();
+                yPosition = 20;
+              }
 
-          yPosition += 7;
-        });
+              doc.setFontSize(10);
+              doc.text(`${index + 1}`, 14, yPosition);
+              doc.text(guru.nip, 35, yPosition);
+              doc.text(guru.nama_lengkap, 60, yPosition);
+              doc.text(guru.mata_pelajaran || "-", 120, yPosition);
+              doc.text(
+                guru.status === "aktif" ? "Aktif" : "Tidak Aktif",
+                160,
+                yPosition
+              );
 
-        // Footer
-        const pageCount = doc.internal.getNumberOfPages();
-        for (let i = 1; i <= pageCount; i++) {
-          doc.setPage(i);
-          doc.setFontSize(8);
-          doc.text(`Halaman ${i} dari ${pageCount}`, 105, 285, {
-            align: "center",
+              yPosition += 7;
+            });
+
+            // Footer
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+              doc.setPage(i);
+              doc.setFontSize(8);
+              doc.text(`Halaman ${i} dari ${pageCount}`, 105, 285, {
+                align: "center",
+              });
+            }
+
+            // Save PDF
+            doc.save("data_guru.pdf");
+            showToast("Export PDF berhasil!", "success");
+            hideLoading();
           });
-        }
-
-        // Save PDF
-        doc.save("data_guru.pdf");
-        showToast("Export PDF berhasil!", "success");
       }
 
       // Fungsi export PDF untuk data absensi
@@ -3793,20 +3892,31 @@
         doc.line(14, yPosition, 195, yPosition);
         yPosition += 5;
 
+        // Ambil data dari tabel
+        const tableId =
+          type === "guru" ? "absenGuruTableBody" : "absenSantriTableBody";
+        const rows = document.querySelectorAll(`#${tableId} tr`);
+
         // Data absensi
-        const data = type === "guru" ? dataGuru : dataSantri;
-        data.forEach((item, index) => {
+        rows.forEach((row, index) => {
           if (yPosition > 270) {
             doc.addPage();
             yPosition = 20;
           }
 
+          const cells = row.querySelectorAll("td");
+          const statusSelect = cells[4].querySelector("select");
+          const statusText = statusSelect
+            ? statusSelect.options[statusSelect.selectedIndex].text
+            : "-";
+          const keterangan = cells[5].querySelector("input").value;
+
           doc.setFontSize(10);
           doc.text(`${index + 1}`, 14, yPosition);
-          doc.text(item.nama_lengkap, 35, yPosition);
-          doc.text(type === "guru" ? item.nip : item.nis, 90, yPosition);
-          doc.text("-", 130, yPosition);
-          doc.text("-", 160, yPosition);
+          doc.text(cells[1].textContent, 35, yPosition);
+          doc.text(cells[2].textContent, 90, yPosition);
+          doc.text(statusText, 130, yPosition);
+          doc.text(keterangan, 160, yPosition);
 
           yPosition += 7;
         });
@@ -3852,36 +3962,50 @@
         doc.line(14, yPosition, 195, yPosition);
         yPosition += 5;
 
-        // Data kegiatan
-        dataKegiatan.forEach((kegiatan, index) => {
-          if (yPosition > 270) {
-            doc.addPage();
-            yPosition = 20;
-          }
+        // Get all data for export (not just current page)
+        showLoading();
+        supabase
+          .from("kegiatan")
+          .select("*")
+          .then(({ data, error }) => {
+            if (error) {
+              showToast("Error loading data for export: " + error.message, "error");
+              hideLoading();
+              return;
+            }
 
-          doc.setFontSize(10);
-          doc.text(`${index + 1}`, 14, yPosition);
-          doc.text(formatDate(kegiatan.tanggal), 35, yPosition);
-          doc.text(kegiatan.nama, 60, yPosition);
-          doc.text(kegiatan.penanggung_jawab || "-", 120, yPosition);
-          doc.text(getStatusText(kegiatan.status), 160, yPosition);
+            // Data kegiatan
+            data.forEach((kegiatan, index) => {
+              if (yPosition > 270) {
+                doc.addPage();
+                yPosition = 20;
+              }
 
-          yPosition += 7;
-        });
+              doc.setFontSize(10);
+              doc.text(`${index + 1}`, 14, yPosition);
+              doc.text(formatDate(kegiatan.tanggal), 35, yPosition);
+              doc.text(kegiatan.nama, 60, yPosition);
+              doc.text(kegiatan.penanggung_jawab || "-", 120, yPosition);
+              doc.text(getStatusText(kegiatan.status), 160, yPosition);
 
-        // Footer
-        const pageCount = doc.internal.getNumberOfPages();
-        for (let i = 1; i <= pageCount; i++) {
-          doc.setPage(i);
-          doc.setFontSize(8);
-          doc.text(`Halaman ${i} dari ${pageCount}`, 105, 285, {
-            align: "center",
+              yPosition += 7;
+            });
+
+            // Footer
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+              doc.setPage(i);
+              doc.setFontSize(8);
+              doc.text(`Halaman ${i} dari ${pageCount}`, 105, 285, {
+                align: "center",
+              });
+            }
+
+            // Save PDF
+            doc.save("data_kegiatan.pdf");
+            showToast("Export PDF berhasil!", "success");
+            hideLoading();
           });
-        }
-
-        // Save PDF
-        doc.save("data_kegiatan.pdf");
-        showToast("Export PDF berhasil!", "success");
       }
 
       // Fungsi export PDF untuk data fasilitas
@@ -3910,36 +4034,50 @@
         doc.line(14, yPosition, 195, yPosition);
         yPosition += 5;
 
-        // Data fasilitas
-        dataFasilitas.forEach((fasilitas, index) => {
-          if (yPosition > 270) {
-            doc.addPage();
-            yPosition = 20;
-          }
+        // Get all data for export (not just current page)
+        showLoading();
+        supabase
+          .from("fasilitas")
+          .select("*")
+          .then(({ data, error }) => {
+            if (error) {
+              showToast("Error loading data for export: " + error.message, "error");
+              hideLoading();
+              return;
+            }
 
-          doc.setFontSize(10);
-          doc.text(`${index + 1}`, 14, yPosition);
-          doc.text(fasilitas.nama, 35, yPosition);
-          doc.text(fasilitas.kapasitas || "-", 90, yPosition);
-          doc.text(fasilitas.kondisi || "-", 120, yPosition);
-          doc.text(getStatusText(fasilitas.status), 160, yPosition);
+            // Data fasilitas
+            data.forEach((fasilitas, index) => {
+              if (yPosition > 270) {
+                doc.addPage();
+                yPosition = 20;
+              }
 
-          yPosition += 7;
-        });
+              doc.setFontSize(10);
+              doc.text(`${index + 1}`, 14, yPosition);
+              doc.text(fasilitas.nama, 35, yPosition);
+              doc.text(fasilitas.kapasitas || "-", 90, yPosition);
+              doc.text(fasilitas.kondisi || "-", 120, yPosition);
+              doc.text(getStatusText(fasilitas.status), 160, yPosition);
 
-        // Footer
-        const pageCount = doc.internal.getNumberOfPages();
-        for (let i = 1; i <= pageCount; i++) {
-          doc.setPage(i);
-          doc.setFontSize(8);
-          doc.text(`Halaman ${i} dari ${pageCount}`, 105, 285, {
-            align: "center",
+              yPosition += 7;
+            });
+
+            // Footer
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+              doc.setPage(i);
+              doc.setFontSize(8);
+              doc.text(`Halaman ${i} dari ${pageCount}`, 105, 285, {
+                align: "center",
+              });
+            }
+
+            // Save PDF
+            doc.save("data_fasilitas.pdf");
+            showToast("Export PDF berhasil!", "success");
+            hideLoading();
           });
-        }
-
-        // Save PDF
-        doc.save("data_fasilitas.pdf");
-        showToast("Export PDF berhasil!", "success");
       }
 
       // Fungsi export PDF untuk data transaksi
@@ -3968,126 +4106,174 @@
         doc.line(14, yPosition, 195, yPosition);
         yPosition += 5;
 
-        // Data transaksi
-        dataTransaksi.forEach((transaksi, index) => {
-          if (yPosition > 270) {
-            doc.addPage();
-            yPosition = 20;
-          }
+        // Get all data for export (not just current page)
+        showLoading();
+        supabase
+          .from("transaksi")
+          .select("*")
+          .then(({ data, error }) => {
+            if (error) {
+              showToast("Error loading data for export: " + error.message, "error");
+              hideLoading();
+              return;
+            }
 
-          doc.setFontSize(10);
-          doc.text(`${index + 1}`, 14, yPosition);
-          doc.text(formatDate(transaksi.tanggal), 35, yPosition);
-          doc.text(transaksi.keterangan.substring(0, 25), 60, yPosition);
-          doc.text(transaksi.kategori, 120, yPosition);
-          doc.text(
-            transaksi.jenis === "pemasukan" ? "Pemasukan" : "Pengeluaran",
-            160,
-            yPosition
-          );
+            // Data transaksi
+            data.forEach((transaksi, index) => {
+              if (yPosition > 270) {
+                doc.addPage();
+                yPosition = 20;
+              }
 
-          yPosition += 7;
-        });
+              doc.setFontSize(10);
+              doc.text(`${index + 1}`, 14, yPosition);
+              doc.text(formatDate(transaksi.tanggal), 35, yPosition);
+              doc.text(transaksi.keterangan.substring(0, 25), 60, yPosition);
+              doc.text(transaksi.kategori, 120, yPosition);
+              doc.text(
+                transaksi.jenis === "pemasukan" ? "Pemasukan" : "Pengeluaran",
+                160,
+                yPosition
+              );
 
-        // Footer
-        const pageCount = doc.internal.getNumberOfPages();
-        for (let i = 1; i <= pageCount; i++) {
-          doc.setPage(i);
-          doc.setFontSize(8);
-          doc.text(`Halaman ${i} dari ${pageCount}`, 105, 285, {
-            align: "center",
+              yPosition += 7;
+            });
+
+            // Footer
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+              doc.setPage(i);
+              doc.setFontSize(8);
+              doc.text(`Halaman ${i} dari ${pageCount}`, 105, 285, {
+                align: "center",
+              });
+            }
+
+            // Save PDF
+            doc.save("data_transaksi.pdf");
+            showToast("Export PDF berhasil!", "success");
+            hideLoading();
           });
-        }
-
-        // Save PDF
-        doc.save("data_transaksi.pdf");
-        showToast("Export PDF berhasil!", "success");
       }
 
       // Fungsi export Excel untuk data santri
       function exportSantriExcel() {
-        // Siapkan data untuk Excel
-        const data = dataSantri.map((santri, index) => ({
-          No: index + 1,
-          NIS: santri.nis,
-          "Nama Lengkap": santri.nama_lengkap,
-          "Tempat Lahir": santri.tempat_lahir || "",
-          "Tanggal Lahir": santri.tanggal_lahir || "",
-          Kelas: santri.kelas ? santri.kelas.nama : "",
-          Alamat: santri.alamat || "",
-          "Nama Orang Tua": santri.nama_ortu || "",
-          "HP Orang Tua": santri.hp_ortu || "",
-          Status: santri.status === "aktif" ? "Aktif" : "Tidak Aktif",
-        }));
+        showLoading();
+        // Get all data for export (not just current page)
+        supabase
+          .from("santri")
+          .select(`
+            *,
+            kelas (
+                id,
+                nama
+            )
+        `)
+          .then(({ data, error }) => {
+            if (error) {
+              showToast("Error loading data for export: " + error.message, "error");
+              hideLoading();
+              return;
+            }
 
-        // Buat workbook
-        const wb = XLSX.utils.book_new();
+            // Siapkan data untuk Excel
+            const exportData = data.map((santri, index) => ({
+              No: index + 1,
+              NIS: santri.nis,
+              "Nama Lengkap": santri.nama_lengkap,
+              "Tempat Lahir": santri.tempat_lahir || "",
+              "Tanggal Lahir": santri.tanggal_lahir || "",
+              Kelas: santri.kelas ? santri.kelas.nama : "",
+              Alamat: santri.alamat || "",
+              "Nama Orang Tua": santri.nama_ortu || "",
+              "HP Orang Tua": santri.hp_ortu || "",
+              Status: santri.status === "aktif" ? "Aktif" : "Tidak Aktif",
+            }));
 
-        // Buat worksheet
-        const ws = XLSX.utils.json_to_sheet(data);
+            // Buat workbook
+            const wb = XLSX.utils.book_new();
 
-        // Atur lebar kolom
-        const colWidths = [
-          { wch: 5 }, // No
-          { wch: 15 }, // NIS
-          { wch: 25 }, // Nama Lengkap
-          { wch: 15 }, // Tempat Lahir
-          { wch: 15 }, // Tanggal Lahir
-          { wch: 10 }, // Kelas
-          { wch: 20 }, // Alamat
-          { wch: 20 }, // Nama Orang Tua
-          { wch: 15 }, // HP Orang Tua
-          { wch: 10 }, // Status
-        ];
-        ws["!cols"] = colWidths;
+            // Buat worksheet
+            const ws = XLSX.utils.json_to_sheet(exportData);
 
-        // Tambahkan worksheet ke workbook
-        XLSX.utils.book_append_sheet(wb, ws, "Data Santri");
+            // Atur lebar kolom
+            const colWidths = [
+              { wch: 5 }, // No
+              { wch: 15 }, // NIS
+              { wch: 25 }, // Nama Lengkap
+              { wch: 15 }, // Tempat Lahir
+              { wch: 15 }, // Tanggal Lahir
+              { wch: 10 }, // Kelas
+              { wch: 20 }, // Alamat
+              { wch: 20 }, // Nama Orang Tua
+              { wch: 15 }, // HP Orang Tua
+              { wch: 10 }, // Status
+            ];
+            ws["!cols"] = colWidths;
 
-        // Export file
-        XLSX.writeFile(wb, "data_santri.xlsx");
-        showToast("Export Excel berhasil!", "success");
+            // Tambahkan worksheet ke workbook
+            XLSX.utils.book_append_sheet(wb, ws, "Data Santri");
+
+            // Export file
+            XLSX.writeFile(wb, "data_santri.xlsx");
+            showToast("Export Excel berhasil!", "success");
+            hideLoading();
+          });
       }
 
       // Fungsi export Excel untuk data guru
       function exportGuruExcel() {
-        // Siapkan data untuk Excel
-        const data = dataGuru.map((guru, index) => ({
-          No: index + 1,
-          NIP: guru.nip,
-          "Nama Lengkap": guru.nama_lengkap,
-          "Mata Pelajaran": guru.mata_pelajaran || "",
-          "No. HP": guru.no_hp || "",
-          Email: guru.email || "",
-          Alamat: guru.alamat || "",
-          Status: guru.status === "aktif" ? "Aktif" : "Tidak Aktif",
-        }));
+        showLoading();
+        // Get all data for export (not just current page)
+        supabase
+          .from("guru")
+          .select("*")
+          .then(({ data, error }) => {
+            if (error) {
+              showToast("Error loading data for export: " + error.message, "error");
+              hideLoading();
+              return;
+            }
 
-        // Buat workbook
-        const wb = XLSX.utils.book_new();
+            // Siapkan data untuk Excel
+            const exportData = data.map((guru, index) => ({
+              No: index + 1,
+              NIP: guru.nip,
+              "Nama Lengkap": guru.nama_lengkap,
+              "Mata Pelajaran": guru.mata_pelajaran || "",
+              "No. HP": guru.no_hp || "",
+              Email: guru.email || "",
+              Alamat: guru.alamat || "",
+              Status: guru.status === "aktif" ? "Aktif" : "Tidak Aktif",
+            }));
 
-        // Buat worksheet
-        const ws = XLSX.utils.json_to_sheet(data);
+            // Buat workbook
+            const wb = XLSX.utils.book_new();
 
-        // Atur lebar kolom
-        const colWidths = [
-          { wch: 5 }, // No
-          { wch: 20 }, // NIP
-          { wch: 25 }, // Nama Lengkap
-          { wch: 20 }, // Mata Pelajaran
-          { wch: 15 }, // No. HP
-          { wch: 25 }, // Email
-          { wch: 30 }, // Alamat
-          { wch: 10 }, // Status
-        ];
-        ws["!cols"] = colWidths;
+            // Buat worksheet
+            const ws = XLSX.utils.json_to_sheet(exportData);
 
-        // Tambahkan worksheet ke workbook
-        XLSX.utils.book_append_sheet(wb, ws, "Data Guru");
+            // Atur lebar kolom
+            const colWidths = [
+              { wch: 5 }, // No
+              { wch: 20 }, // NIP
+              { wch: 25 }, // Nama Lengkap
+              { wch: 20 }, // Mata Pelajaran
+              { wch: 15 }, // No. HP
+              { wch: 25 }, // Email
+              { wch: 30 }, // Alamat
+              { wch: 10 }, // Status
+            ];
+            ws["!cols"] = colWidths;
 
-        // Export file
-        XLSX.writeFile(wb, "data_guru.xlsx");
-        showToast("Export Excel berhasil!", "success");
+            // Tambahkan worksheet ke workbook
+            XLSX.utils.book_append_sheet(wb, ws, "Data Guru");
+
+            // Export file
+            XLSX.writeFile(wb, "data_guru.xlsx");
+            showToast("Export Excel berhasil!", "success");
+            hideLoading();
+          });
       }
 
       // Fungsi export Excel untuk data absensi
@@ -4151,123 +4337,165 @@
 
       // Fungsi export Excel untuk data kegiatan
       function exportKegiatanExcel() {
-        // Siapkan data untuk Excel
-        const data = dataKegiatan.map((kegiatan, index) => ({
-          No: index + 1,
-          "Nama Kegiatan": kegiatan.nama,
-          Tanggal: formatDate(kegiatan.tanggal),
-          Waktu: kegiatan.waktu || "",
-          Lokasi: kegiatan.lokasi || "",
-          "Penanggung Jawab": kegiatan.penanggung_jawab || "",
-          Status: getStatusText(kegiatan.status),
-          Deskripsi: kegiatan.deskripsi || "",
-        }));
+        showLoading();
+        // Get all data for export (not just current page)
+        supabase
+          .from("kegiatan")
+          .select("*")
+          .then(({ data, error }) => {
+            if (error) {
+              showToast("Error loading data for export: " + error.message, "error");
+              hideLoading();
+              return;
+            }
 
-        // Buat workbook
-        const wb = XLSX.utils.book_new();
+            // Siapkan data untuk Excel
+            const exportData = data.map((kegiatan, index) => ({
+              No: index + 1,
+              "Nama Kegiatan": kegiatan.nama,
+              Tanggal: formatDate(kegiatan.tanggal),
+              Waktu: kegiatan.waktu || "",
+              Lokasi: kegiatan.lokasi || "",
+              "Penanggung Jawab": kegiatan.penanggung_jawab || "",
+              Status: getStatusText(kegiatan.status),
+              Deskripsi: kegiatan.deskripsi || "",
+            }));
 
-        // Buat worksheet
-        const ws = XLSX.utils.json_to_sheet(data);
+            // Buat workbook
+            const wb = XLSX.utils.book_new();
 
-        // Atur lebar kolom
-        const colWidths = [
-          { wch: 5 }, // No
-          { wch: 25 }, // Nama Kegiatan
-          { wch: 15 }, // Tanggal
-          { wch: 10 }, // Waktu
-          { wch: 20 }, // Lokasi
-          { wch: 20 }, // Penanggung Jawab
-          { wch: 10 }, // Status
-          { wch: 30 }, // Deskripsi
-        ];
-        ws["!cols"] = colWidths;
+            // Buat worksheet
+            const ws = XLSX.utils.json_to_sheet(exportData);
 
-        // Tambahkan worksheet ke workbook
-        XLSX.utils.book_append_sheet(wb, ws, "Data Kegiatan");
+            // Atur lebar kolom
+            const colWidths = [
+              { wch: 5 }, // No
+              { wch: 25 }, // Nama Kegiatan
+              { wch: 15 }, // Tanggal
+              { wch: 10 }, // Waktu
+              { wch: 20 }, // Lokasi
+              { wch: 20 }, // Penanggung Jawab
+              { wch: 10 }, // Status
+              { wch: 30 }, // Deskripsi
+            ];
+            ws["!cols"] = colWidths;
 
-        // Export file
-        XLSX.writeFile(wb, "data_kegiatan.xlsx");
-        showToast("Export Excel berhasil!", "success");
+            // Tambahkan worksheet ke workbook
+            XLSX.utils.book_append_sheet(wb, ws, "Data Kegiatan");
+
+            // Export file
+            XLSX.writeFile(wb, "data_kegiatan.xlsx");
+            showToast("Export Excel berhasil!", "success");
+            hideLoading();
+          });
       }
 
       // Fungsi export Excel untuk data fasilitas
       function exportFasilitasExcel() {
-        // Siapkan data untuk Excel
-        const data = dataFasilitas.map((fasilitas, index) => ({
-          No: index + 1,
-          "Nama Fasilitas": fasilitas.nama,
-          Kapasitas: fasilitas.kapasitas || "",
-          Kondisi: fasilitas.kondisi || "",
-          "Penanggung Jawab": fasilitas.penanggung_jawab || "",
-          "Pemeriksaan Terakhir": fasilitas.pemeriksaan_terakhir
-            ? formatDate(fasilitas.pemeriksaan_terakhir)
-            : "",
-          Status: getStatusText(fasilitas.status),
-          Deskripsi: fasilitas.deskripsi || "",
-        }));
+        showLoading();
+        // Get all data for export (not just current page)
+        supabase
+          .from("fasilitas")
+          .select("*")
+          .then(({ data, error }) => {
+            if (error) {
+              showToast("Error loading data for export: " + error.message, "error");
+              hideLoading();
+              return;
+            }
 
-        // Buat workbook
-        const wb = XLSX.utils.book_new();
+            // Siapkan data untuk Excel
+            const exportData = data.map((fasilitas, index) => ({
+              No: index + 1,
+              "Nama Fasilitas": fasilitas.nama,
+              Kapasitas: fasilitas.kapasitas || "",
+              Kondisi: fasilitas.kondisi || "",
+              "Penanggung Jawab": fasilitas.penanggung_jawab || "",
+              "Pemeriksaan Terakhir": fasilitas.pemeriksaan_terakhir
+                ? formatDate(fasilitas.pemeriksaan_terakhir)
+                : "",
+              Status: getStatusText(fasilitas.status),
+              Deskripsi: fasilitas.deskripsi || "",
+            }));
 
-        // Buat worksheet
-        const ws = XLSX.utils.json_to_sheet(data);
+            // Buat workbook
+            const wb = XLSX.utils.book_new();
 
-        // Atur lebar kolom
-        const colWidths = [
-          { wch: 5 }, // No
-          { wch: 20 }, // Nama Fasilitas
-          { wch: 10 }, // Kapasitas
-          { wch: 10 }, // Kondisi
-          { wch: 20 }, // Penanggung Jawab
-          { wch: 20 }, // Pemeriksaan Terakhir
-          { wch: 10 }, // Status
-          { wch: 30 }, // Deskripsi
-        ];
-        ws["!cols"] = colWidths;
+            // Buat worksheet
+            const ws = XLSX.utils.json_to_sheet(exportData);
 
-        // Tambahkan worksheet ke workbook
-        XLSX.utils.book_append_sheet(wb, ws, "Data Fasilitas");
+            // Atur lebar kolom
+            const colWidths = [
+              { wch: 5 }, // No
+              { wch: 20 }, // Nama Fasilitas
+              { wch: 10 }, // Kapasitas
+              { wch: 10 }, // Kondisi
+              { wch: 20 }, // Penanggung Jawab
+              { wch: 20 }, // Pemeriksaan Terakhir
+              { wch: 10 }, // Status
+              { wch: 30 }, // Deskripsi
+            ];
+            ws["!cols"] = colWidths;
 
-        // Export file
-        XLSX.writeFile(wb, "data_fasilitas.xlsx");
-        showToast("Export Excel berhasil!", "success");
+            // Tambahkan worksheet ke workbook
+            XLSX.utils.book_append_sheet(wb, ws, "Data Fasilitas");
+
+            // Export file
+            XLSX.writeFile(wb, "data_fasilitas.xlsx");
+            showToast("Export Excel berhasil!", "success");
+            hideLoading();
+          });
       }
 
       // Fungsi export Excel untuk data transaksi
       function exportTransaksiExcel() {
-        // Siapkan data untuk Excel
-        const data = dataTransaksi.map((transaksi, index) => ({
-          No: index + 1,
-          Tanggal: formatDate(transaksi.tanggal),
-          Keterangan: transaksi.keterangan,
-          Kategori: transaksi.kategori,
-          Jenis: transaksi.jenis === "pemasukan" ? "Pemasukan" : "Pengeluaran",
-          Jumlah: transaksi.jumlah,
-        }));
+        showLoading();
+        // Get all data for export (not just current page)
+        supabase
+          .from("transaksi")
+          .select("*")
+          .then(({ data, error }) => {
+            if (error) {
+              showToast("Error loading data for export: " + error.message, "error");
+              hideLoading();
+              return;
+            }
 
-        // Buat workbook
-        const wb = XLSX.utils.book_new();
+            // Siapkan data untuk Excel
+            const exportData = data.map((transaksi, index) => ({
+              No: index + 1,
+              Tanggal: formatDate(transaksi.tanggal),
+              Keterangan: transaksi.keterangan,
+              Kategori: transaksi.kategori,
+              Jenis: transaksi.jenis === "pemasukan" ? "Pemasukan" : "Pengeluaran",
+              Jumlah: transaksi.jumlah,
+            }));
 
-        // Buat worksheet
-        const ws = XLSX.utils.json_to_sheet(data);
+            // Buat workbook
+            const wb = XLSX.utils.book_new();
 
-        // Atur lebar kolom
-        const colWidths = [
-          { wch: 5 }, // No
-          { wch: 15 }, // Tanggal
-          { wch: 30 }, // Keterangan
-          { wch: 15 }, // Kategori
-          { wch: 10 }, // Jenis
-          { wch: 15 }, // Jumlah
-        ];
-        ws["!cols"] = colWidths;
+            // Buat worksheet
+            const ws = XLSX.utils.json_to_sheet(exportData);
 
-        // Tambahkan worksheet ke workbook
-        XLSX.utils.book_append_sheet(wb, ws, "Data Transaksi");
+            // Atur lebar kolom
+            const colWidths = [
+              { wch: 5 }, // No
+              { wch: 15 }, // Tanggal
+              { wch: 30 }, // Keterangan
+              { wch: 15 }, // Kategori
+              { wch: 10 }, // Jenis
+              { wch: 15 }, // Jumlah
+            ];
+            ws["!cols"] = colWidths;
 
-        // Export file
-        XLSX.writeFile(wb, "data_transaksi.xlsx");
-        showToast("Export Excel berhasil!", "success");
+            // Tambahkan worksheet ke workbook
+            XLSX.utils.book_append_sheet(wb, ws, "Data Transaksi");
+
+            // Export file
+            XLSX.writeFile(wb, "data_transaksi.xlsx");
+            showToast("Export Excel berhasil!", "success");
+            hideLoading();
+          });
       }
 
       // Fungsi export PDF untuk laporan keuangan
@@ -4278,110 +4506,118 @@
         // Filter transaksi bulan ini
         const currentMonth = new Date().getMonth();
         const currentYear = new Date().getFullYear();
-        const transaksiThisMonth = dataTransaksi.filter((t) => {
-          const date = new Date(t.tanggal);
-          return (
-            date.getMonth() === currentMonth &&
-            date.getFullYear() === currentYear
-          );
-        });
 
-        // Hitung total
-        const totalPemasukan = transaksiThisMonth
-          .filter((t) => t.jenis === "pemasukan")
-          .reduce((sum, t) => sum + parseFloat(t.jumlah), 0);
-        const totalPengeluaran = transaksiThisMonth
-          .filter((t) => t.jenis === "pengeluaran")
-          .reduce((sum, t) => sum + parseFloat(t.jumlah), 0);
-        const saldo = totalPemasukan - totalPengeluaran;
+        showLoading();
+        supabase
+          .from("transaksi")
+          .select("*")
+          .gte("tanggal", new Date(currentYear, currentMonth, 1))
+          .lte("tanggal", new Date(currentYear, currentMonth + 1, 0))
+          .then(({ data: transaksiThisMonth, error }) => {
+            if (error) {
+              showToast("Error loading data for report: " + error.message, "error");
+              hideLoading();
+              return;
+            }
 
-        // Header
-        doc.setFontSize(18);
-        doc.text("Laporan Keuangan Bulanan", 14, 15);
+            // Hitung total
+            const totalPemasukan = transaksiThisMonth
+              .filter((t) => t.jenis === "pemasukan")
+              .reduce((sum, t) => sum + parseFloat(t.jumlah), 0);
+            const totalPengeluaran = transaksiThisMonth
+              .filter((t) => t.jenis === "pengeluaran")
+              .reduce((sum, t) => sum + parseFloat(t.jumlah), 0);
+            const saldo = totalPemasukan - totalPengeluaran;
 
-        // Periode
-        doc.setFontSize(12);
-        const monthNames = [
-          "Januari",
-          "Februari",
-          "Maret",
-          "April",
-          "Mei",
-          "Juni",
-          "Juli",
-          "Agustus",
-          "September",
-          "Oktober",
-          "November",
-          "Desember",
-        ];
-        doc.text(`Periode: ${monthNames[currentMonth]} ${currentYear}`, 14, 25);
+            // Header
+            doc.setFontSize(18);
+            doc.text("Laporan Keuangan Bulanan", 14, 15);
 
-        // Ringkasan
-        doc.setFontSize(12);
-        doc.text("Ringkasan:", 14, 40);
-        doc.setFontSize(10);
-        doc.text(`Total Pemasukan: Rp ${formatNumber(totalPemasukan)}`, 20, 50);
-        doc.text(
-          `Total Pengeluaran: Rp ${formatNumber(totalPengeluaran)}`,
-          20,
-          57
-        );
-        doc.text(`Saldo: Rp ${formatNumber(saldo)}`, 20, 64);
+            // Periode
+            doc.setFontSize(12);
+            const monthNames = [
+              "Januari",
+              "Februari",
+              "Maret",
+              "April",
+              "Mei",
+              "Juni",
+              "Juli",
+              "Agustus",
+              "September",
+              "Oktober",
+              "November",
+              "Desember",
+            ];
+            doc.text(`Periode: ${monthNames[currentMonth]} ${currentYear}`, 14, 25);
 
-        // Tabel transaksi
-        let yPosition = 80;
-        doc.setFontSize(12);
-        doc.text("Detail Transaksi:", 14, yPosition);
-        yPosition += 10;
+            // Ringkasan
+            doc.setFontSize(12);
+            doc.text("Ringkasan:", 14, 40);
+            doc.setFontSize(10);
+            doc.text(`Total Pemasukan: Rp ${formatNumber(totalPemasukan)}`, 20, 50);
+            doc.text(
+              `Total Pengeluaran: Rp ${formatNumber(totalPengeluaran)}`,
+              20,
+              57
+            );
+            doc.text(`Saldo: Rp ${formatNumber(saldo)}`, 20, 64);
 
-        doc.setFontSize(10);
-        doc.text("Tanggal", 14, yPosition);
-        doc.text("Keterangan", 40, yPosition);
-        doc.text("Kategori", 100, yPosition);
-        doc.text("Jenis", 130, yPosition);
-        doc.text("Jumlah", 160, yPosition);
+            // Tabel transaksi
+            let yPosition = 80;
+            doc.setFontSize(12);
+            doc.text("Detail Transaksi:", 14, yPosition);
+            yPosition += 10;
 
-        yPosition += 7;
-        doc.line(14, yPosition, 195, yPosition);
-        yPosition += 5;
+            doc.setFontSize(10);
+            doc.text("Tanggal", 14, yPosition);
+            doc.text("Keterangan", 40, yPosition);
+            doc.text("Kategori", 100, yPosition);
+            doc.text("Jenis", 130, yPosition);
+            doc.text("Jumlah", 160, yPosition);
 
-        // Data transaksi
-        transaksiThisMonth.forEach((transaksi) => {
-          if (yPosition > 270) {
-            doc.addPage();
-            yPosition = 20;
-          }
+            yPosition += 7;
+            doc.line(14, yPosition, 195, yPosition);
+            yPosition += 5;
 
-          doc.setFontSize(9);
-          doc.text(formatDate(transaksi.tanggal), 14, yPosition);
-          doc.text(transaksi.keterangan.substring(0, 25), 40, yPosition);
-          doc.text(transaksi.kategori, 100, yPosition);
-          doc.text(
-            transaksi.jenis === "pemasukan" ? "Pemasukan" : "Pengeluaran",
-            130,
-            yPosition
-          );
-          doc.text(`Rp ${formatNumber(transaksi.jumlah)}`, 160, yPosition);
+            // Data transaksi
+            transaksiThisMonth.forEach((transaksi) => {
+              if (yPosition > 270) {
+                doc.addPage();
+                yPosition = 20;
+              }
 
-          yPosition += 6;
-        });
+              doc.setFontSize(9);
+              doc.text(formatDate(transaksi.tanggal), 14, yPosition);
+              doc.text(transaksi.keterangan.substring(0, 25), 40, yPosition);
+              doc.text(transaksi.kategori, 100, yPosition);
+              doc.text(
+                transaksi.jenis === "pemasukan" ? "Pemasukan" : "Pengeluaran",
+                130,
+                yPosition
+              );
+              doc.text(`Rp ${formatNumber(transaksi.jumlah)}`, 160, yPosition);
 
-        // Footer
-        const pageCount = doc.internal.getNumberOfPages();
-        for (let i = 1; i <= pageCount; i++) {
-          doc.setPage(i);
-          doc.setFontSize(8);
-          doc.text(`Halaman ${i} dari ${pageCount}`, 105, 285, {
-            align: "center",
+              yPosition += 6;
+            });
+
+            // Footer
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+              doc.setPage(i);
+              doc.setFontSize(8);
+              doc.text(`Halaman ${i} dari ${pageCount}`, 105, 285, {
+                align: "center",
+              });
+            }
+
+            // Save PDF
+            doc.save(
+              `laporan_keuangan_${monthNames[currentMonth]}_${currentYear}.pdf`
+            );
+            showToast("Export PDF laporan keuangan berhasil!", "success");
+            hideLoading();
           });
-        }
-
-        // Save PDF
-        doc.save(
-          `laporan_keuangan_${monthNames[currentMonth]}_${currentYear}.pdf`
-        );
-        showToast("Export PDF laporan keuangan berhasil!", "success");
       }
 
       // Fungsi export Excel untuk laporan keuangan
@@ -4389,83 +4625,91 @@
         // Filter transaksi bulan ini
         const currentMonth = new Date().getMonth();
         const currentYear = new Date().getFullYear();
-        const transaksiThisMonth = dataTransaksi.filter((t) => {
-          const date = new Date(t.tanggal);
-          return (
-            date.getMonth() === currentMonth &&
-            date.getFullYear() === currentYear
-          );
-        });
 
-        // Hitung total
-        const totalPemasukan = transaksiThisMonth
-          .filter((t) => t.jenis === "pemasukan")
-          .reduce((sum, t) => sum + parseFloat(t.jumlah), 0);
-        const totalPengeluaran = transaksiThisMonth
-          .filter((t) => t.jenis === "pengeluaran")
-          .reduce((sum, t) => sum + parseFloat(t.jumlah), 0);
-        const saldo = totalPemasukan - totalPengeluaran;
+        showLoading();
+        supabase
+          .from("transaksi")
+          .select("*")
+          .gte("tanggal", new Date(currentYear, currentMonth, 1))
+          .lte("tanggal", new Date(currentYear, currentMonth + 1, 0))
+          .then(({ data: transaksiThisMonth, error }) => {
+            if (error) {
+              showToast("Error loading data for report: " + error.message, "error");
+              hideLoading();
+              return;
+            }
 
-        // Siapkan data ringkasan
-        const ringkasanData = [
-          { Item: "Total Pemasukan", Jumlah: totalPemasukan },
-          { Item: "Total Pengeluaran", Jumlah: totalPengeluaran },
-          { Item: "Saldo", Jumlah: saldo },
-        ];
+            // Hitung total
+            const totalPemasukan = transaksiThisMonth
+              .filter((t) => t.jenis === "pemasukan")
+              .reduce((sum, t) => sum + parseFloat(t.jumlah), 0);
+            const totalPengeluaran = transaksiThisMonth
+              .filter((t) => t.jenis === "pengeluaran")
+              .reduce((sum, t) => sum + parseFloat(t.jumlah), 0);
+            const saldo = totalPemasukan - totalPengeluaran;
 
-        // Siapkan data transaksi
-        const transaksiData = transaksiThisMonth.map((transaksi, index) => ({
-          No: index + 1,
-          Tanggal: formatDate(transaksi.tanggal),
-          Keterangan: transaksi.keterangan,
-          Kategori: transaksi.kategori,
-          Jenis: transaksi.jenis === "pemasukan" ? "Pemasukan" : "Pengeluaran",
-          Jumlah: transaksi.jumlah,
-        }));
+            // Siapkan data ringkasan
+            const ringkasanData = [
+              { Item: "Total Pemasukan", Jumlah: totalPemasukan },
+              { Item: "Total Pengeluaran", Jumlah: totalPengeluaran },
+              { Item: "Saldo", Jumlah: saldo },
+            ];
 
-        // Buat workbook
-        const wb = XLSX.utils.book_new();
+            // Siapkan data transaksi
+            const transaksiData = transaksiThisMonth.map((transaksi, index) => ({
+              No: index + 1,
+              Tanggal: formatDate(transaksi.tanggal),
+              Keterangan: transaksi.keterangan,
+              Kategori: transaksi.kategori,
+              Jenis: transaksi.jenis === "pemasukan" ? "Pemasukan" : "Pengeluaran",
+              Jumlah: transaksi.jumlah,
+            }));
 
-        // Buat worksheet ringkasan
-        const wsRingkasan = XLSX.utils.json_to_sheet(ringkasanData);
-        wsRingkasan["!cols"] = [
-          { wch: 20 }, // Item
-          { wch: 15 }, // Jumlah
-        ];
-        XLSX.utils.book_append_sheet(wb, wsRingkasan, "Ringkasan");
+            // Buat workbook
+            const wb = XLSX.utils.book_new();
 
-        // Buat worksheet transaksi
-        const wsTransaksi = XLSX.utils.json_to_sheet(transaksiData);
-        wsTransaksi["!cols"] = [
-          { wch: 5 }, // No
-          { wch: 15 }, // Tanggal
-          { wch: 30 }, // Keterangan
-          { wch: 15 }, // Kategori
-          { wch: 10 }, // Jenis
-          { wch: 15 }, // Jumlah
-        ];
-        XLSX.utils.book_append_sheet(wb, wsTransaksi, "Detail Transaksi");
+            // Buat worksheet ringkasan
+            const wsRingkasan = XLSX.utils.json_to_sheet(ringkasanData);
+            wsRingkasan["!cols"] = [
+              { wch: 20 }, // Item
+              { wch: 15 }, // Jumlah
+            ];
+            XLSX.utils.book_append_sheet(wb, wsRingkasan, "Ringkasan");
 
-        // Export file
-        const monthNames = [
-          "Januari",
-          "Februari",
-          "Maret",
-          "April",
-          "Mei",
-          "Juni",
-          "Juli",
-          "Agustus",
-          "September",
-          "Oktober",
-          "November",
-          "Desember",
-        ];
-        XLSX.writeFile(
-          wb,
-          `laporan_keuangan_${monthNames[currentMonth]}_${currentYear}.xlsx`
-        );
-        showToast("Export Excel laporan keuangan berhasil!", "success");
+            // Buat worksheet transaksi
+            const wsTransaksi = XLSX.utils.json_to_sheet(transaksiData);
+            wsTransaksi["!cols"] = [
+              { wch: 5 }, // No
+              { wch: 15 }, // Tanggal
+              { wch: 30 }, // Keterangan
+              { wch: 15 }, // Kategori
+              { wch: 10 }, // Jenis
+              { wch: 15 }, // Jumlah
+            ];
+            XLSX.utils.book_append_sheet(wb, wsTransaksi, "Detail Transaksi");
+
+            // Export file
+            const monthNames = [
+              "Januari",
+              "Februari",
+              "Maret",
+              "April",
+              "Mei",
+              "Juni",
+              "Juli",
+              "Agustus",
+              "September",
+              "Oktober",
+              "November",
+              "Desember",
+            ];
+            XLSX.writeFile(
+              wb,
+              `laporan_keuangan_${monthNames[currentMonth]}_${currentYear}.xlsx`
+            );
+            showToast("Export Excel laporan keuangan berhasil!", "success");
+            hideLoading();
+          });
       }
 
       // Fungsi generate report
@@ -4511,7 +4755,7 @@
           showToast("Laporan berhasil dibuat dan sedang diproses!", "success");
 
           // Reload data
-          await loadLaporan();
+          await loadLaporan(paginationState.laporan.page);
         } catch (err) {
           showToast("Terjadi kesalahan saat membuat laporan", "error");
         } finally {
@@ -4644,6 +4888,92 @@
         }
       }
 
+      // OPTIMASI: Fungsi helper untuk pagination
+      function getPaginationRange(page, pageSize) {
+        const from = (page - 1) * pageSize;
+        const to = from + pageSize - 1;
+        return { from, to };
+      }
+
+      function updatePagination(tableName) {
+        const state = paginationState[tableName];
+        const totalPages = Math.ceil(state.count / state.pageSize);
+        const infoEl = document.getElementById(`${tableName}PaginationInfo`);
+        const buttonsEl = document.getElementById(`${tableName}PaginationButtons`);
+
+        // Update info text
+        const startItem = (state.page - 1) * state.pageSize + 1;
+        const endItem = Math.min(state.page * state.pageSize, state.count);
+        infoEl.textContent = `Menampilkan ${startItem}-${endItem} dari ${state.count} data`;
+
+        // Clear existing buttons
+        buttonsEl.innerHTML = '';
+
+        // Previous button
+        const prevBtn = document.createElement('button');
+        prevBtn.className = 'pagination-btn';
+        prevBtn.textContent = 'Previous';
+        prevBtn.disabled = state.page === 1;
+        prevBtn.onclick = () => {
+          if (state.page > 1) {
+            loadTableData(tableName, state.page - 1);
+          }
+        };
+        buttonsEl.appendChild(prevBtn);
+
+        // Page number buttons
+        const maxButtons = 5;
+        let startPage = Math.max(1, state.page - Math.floor(maxButtons / 2));
+        let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+
+        if (endPage - startPage + 1 < maxButtons) {
+          startPage = Math.max(1, endPage - maxButtons + 1);
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+          const pageBtn = document.createElement('button');
+          pageBtn.className = `pagination-btn ${i === state.page ? 'active' : ''}`;
+          pageBtn.textContent = i;
+          pageBtn.onclick = () => loadTableData(tableName, i);
+          buttonsEl.appendChild(pageBtn);
+        }
+
+        // Next button
+        const nextBtn = document.createElement('button');
+        nextBtn.className = 'pagination-btn';
+        nextBtn.textContent = 'Next';
+        nextBtn.disabled = state.page === totalPages;
+        nextBtn.onclick = () => {
+          if (state.page < totalPages) {
+            loadTableData(tableName, state.page + 1);
+          }
+        };
+        buttonsEl.appendChild(nextBtn);
+      }
+
+      function loadTableData(tableName, page) {
+        switch (tableName) {
+          case 'santri':
+            loadSantri(page);
+            break;
+          case 'guru':
+            loadGuru(page);
+            break;
+          case 'kegiatan':
+            loadKegiatan(page);
+            break;
+          case 'fasilitas':
+            loadFasilitas(page);
+            break;
+          case 'transaksi':
+            loadTransaksi(page);
+            break;
+          case 'laporan':
+            loadLaporan(page);
+            break;
+        }
+      }
+
       // Fungsi UI
       function toggleSidebar() {
         const sidebar = document.getElementById("sidebar");
@@ -4652,7 +4982,8 @@
         mainContent.classList.toggle("expanded");
       }
 
-      function showSection(sectionId) {
+      // OPTIMASI: Fungsi showSection dengan lazy loading
+      async function showSection(sectionId) {
         // Hide all sections
         const sections = document.querySelectorAll(".content-section");
         sections.forEach((section) => {
@@ -4668,6 +4999,47 @@
           link.classList.remove("active");
         });
         event.target.closest(".nav-link").classList.add("active");
+
+        // Lazy load data based on section
+        showLoading();
+        try {
+          switch (sectionId) {
+            case "dashboard":
+              await loadDashboardData();
+              break;
+            case "santri":
+              await loadSantri();
+              await loadKelas(); // Load kelas for dropdown
+              break;
+            case "pengajar":
+              await loadGuru();
+              break;
+            case "absen":
+              // Load data for absen section
+              await loadKelas(); // For kelas filter
+              // Load absen data when filter is applied
+              break;
+            case "kegiatan":
+              await loadKegiatan();
+              break;
+            case "fasilitas":
+              await loadFasilitas();
+              break;
+            case "keuangan":
+              await loadTransaksi();
+              break;
+            case "laporan":
+              await loadLaporan();
+              break;
+            case "pengaturan":
+              await loadPengaturan();
+              break;
+          }
+        } catch (err) {
+          showToast("Terjadi kesalahan saat memuat data", "error");
+        } finally {
+          hideLoading();
+        }
       }
 
       function switchTab(tabName) {
@@ -4733,7 +5105,8 @@
         if (session) {
           currentUser = session.user;
           await loadUserProfile();
-          await loadAllData();
+          // OPTIMASI: Hanya load dashboard data saat awal
+          await loadDashboardData();
         } else {
           // Show login modal
           document.getElementById("loginModal").classList.add("active");
@@ -4747,7 +5120,8 @@
             currentUser = session.user;
             closeModal("loginModal");
             await loadUserProfile();
-            await loadAllData();
+            // OPTIMASI: Hanya load dashboard data saat login
+            await loadDashboardData();
           } else if (event === "SIGNED_OUT") {
             currentUser = null;
             // Hanya tampilkan modal jika tidak sedang dalam proses logout manual
@@ -4761,6 +5135,3 @@
     </script>
   </body>
 </html>
-
-
-
