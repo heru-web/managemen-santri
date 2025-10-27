@@ -1874,13 +1874,25 @@
         }
       }
 
-      // Fungsi logout
+      // Fungsi logout yang diperbaiki
       async function logout() {
-        await supabase.auth.signOut();
-        currentUser = null;
-        showToast("Logout berhasil!", "success");
-        // Tampilkan modal login lagi
-        document.getElementById("loginModal").classList.add("active");
+        try {
+          showLoading();
+          await supabase.auth.signOut();
+          // Tunggu sebentar agar onAuthStateChange selesai diproses
+          setTimeout(() => {
+            currentUser = null;
+            showToast("Logout berhasil!", "success");
+            // Pastikan modal login ditampilkan
+            const loginModal = document.getElementById("loginModal");
+            loginModal.classList.add("active");
+            hideLoading();
+          }, 500);
+        } catch (error) {
+          console.error("Error during logout:", error);
+          showToast("Gagal logout", "error");
+          hideLoading();
+        }
       }
 
       // Fungsi load profile user
@@ -4727,15 +4739,22 @@
           document.getElementById("loginModal").classList.add("active");
         }
 
-        // Listen for auth changes
+        // Pantau perubahan status autentikasi (versi diperbaiki)
         supabase.auth.onAuthStateChange(async (event, session) => {
+          console.log("Auth state changed:", event, session);
+
           if (event === "SIGNED_IN" && session) {
             currentUser = session.user;
+            closeModal("loginModal");
             await loadUserProfile();
             await loadAllData();
           } else if (event === "SIGNED_OUT") {
             currentUser = null;
-            document.getElementById("loginModal").classList.add("active");
+            // Hanya tampilkan modal jika tidak sedang dalam proses logout manual
+            const loginModal = document.getElementById("loginModal");
+            if (!loginModal.classList.contains("active")) {
+              loginModal.classList.add("active");
+            }
           }
         });
       });
