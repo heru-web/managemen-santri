@@ -12,6 +12,8 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
     />
+    <!-- MODIFIKASI: Tambahkan Library SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
       :root {
         --primary-color: #2c5f2d;
@@ -207,6 +209,16 @@
         object-fit: cover;
       }
 
+      /* MODIFIKASI: Tambahkan Tombol Hamburger untuk Mobile */
+      .mobile-toggle-btn {
+        display: none; /* Sembunyikan di desktop */
+        background: none;
+        border: none;
+        color: var(--primary-color);
+        font-size: 24px;
+        cursor: pointer;
+      }
+
       /* Dashboard Cards */
       .dashboard-cards {
         display: grid;
@@ -284,6 +296,7 @@
         padding: 20px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         margin-bottom: 30px;
+        overflow-x: auto; /* MODIFIKASI: Tambahkan scroll horizontal untuk tabel di mobile */
       }
 
       .table-header {
@@ -291,6 +304,8 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 20px;
+        flex-wrap: wrap; /* MODIFIKASI: Biarkan wrap di mobile */
+        gap: 10px;
       }
 
       .table-title {
@@ -306,6 +321,7 @@
         border-radius: 5px;
         cursor: pointer;
         transition: background 0.3s;
+        white-space: nowrap; /* MODIFIKASI: Cegah teks tombol pecah */
       }
 
       .btn-primary-custom:hover {
@@ -315,6 +331,7 @@
       .custom-table {
         width: 100%;
         border-collapse: collapse;
+        min-width: 600px; /* MODIFIKASI: Set lebar minimum agar tabel tidak hancur */
       }
 
       .custom-table th {
@@ -461,6 +478,7 @@
         display: flex;
         border-bottom: 1px solid #eee;
         margin-bottom: 20px;
+        overflow-x: auto; /* MODIFIKASI: Tambahkan scroll horizontal untuk tab di mobile */
       }
 
       .tab-btn {
@@ -472,6 +490,7 @@
         color: #666;
         border-bottom: 2px solid transparent;
         transition: all 0.3s;
+        white-space: nowrap; /* MODIFIKASI: Cegah teks tab pecah */
       }
 
       .tab-btn.active {
@@ -549,10 +568,12 @@
         display: flex;
         gap: 20px;
         margin-bottom: 20px;
+        flex-wrap: wrap; /* MODIFIKASI: Biarkan wrap di mobile */
       }
 
       .summary-card {
         flex: 1;
+        min-width: 120px; /* MODIFIKASI: Set lebar minimum */
         background: white;
         border-radius: 10px;
         padding: 15px;
@@ -583,76 +604,13 @@
         color: #f39c12;
       }
 
-      /* Toast Notification */
+      /* Toast Notification - Tidak digunakan lagi, diganti SweetAlert */
       .toast-container {
         position: fixed;
         top: 20px;
         right: 20px;
         z-index: 3000;
-      }
-
-      .toast {
-        background: white;
-        border-radius: 5px;
-        padding: 15px;
-        margin-bottom: 10px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        display: flex;
-        align-items: center;
-        min-width: 300px;
-        animation: slideInRight 0.3s ease;
-      }
-
-      @keyframes slideInRight {
-        from {
-          transform: translateX(100%);
-          opacity: 0;
-        }
-        to {
-          transform: translateX(0);
-          opacity: 1;
-        }
-      }
-
-      .toast.success {
-        border-left: 4px solid #2ecc71;
-      }
-
-      .toast.error {
-        border-left: 4px solid #e74c3c;
-      }
-
-      .toast.warning {
-        border-left: 4px solid #f39c12;
-      }
-
-      .toast-icon {
-        margin-right: 10px;
-        font-size: 20px;
-      }
-
-      .toast.success .toast-icon {
-        color: #2ecc71;
-      }
-
-      .toast.error .toast-icon {
-        color: #e74c3c;
-      }
-
-      .toast.warning .toast-icon {
-        color: #f39c12;
-      }
-
-      .toast-message {
-        flex: 1;
-      }
-
-      .toast-close {
-        background: none;
-        border: none;
-        font-size: 16px;
-        cursor: pointer;
-        color: #999;
+        display: none; /* MODIFIKASI: Sembunyikan karena tidak digunakan */
       }
 
       /* Loading indicator */
@@ -697,6 +655,8 @@
         justify-content: space-between;
         align-items: center;
         margin-top: 20px;
+        flex-wrap: wrap; /* MODIFIKASI: Biarkan wrap di mobile */
+        gap: 10px;
       }
 
       .pagination-info {
@@ -731,31 +691,69 @@
         border-color: var(--primary-color);
       }
 
-      /* Responsive */
-      @media (max-width: 768px) {
+      /* MODIFIKASI: Responsive Design */
+      @media (max-width: 992px) {
         .sidebar {
-          transform: translateX(-100%);
+          left: -100%; /* MODIFIKASI: Sembunyikan sidebar di luar layar */
         }
-
         .sidebar.active {
-          transform: translateX(0);
+          left: 0; /* MODIFIKASI: Tampilkan sidebar saat aktif */
         }
-
         .main-content {
-          margin-left: 0;
+          margin-left: 0; /* MODIFIKASI: Hilangkan margin untuk sidebar */
         }
-
-        .dashboard-cards {
-          grid-template-columns: 1fr;
+        .mobile-toggle-btn {
+          display: block; /* MODIFIKASI: Tampilkan tombol hamburger */
         }
+        .sidebar.collapsed {
+          width: 250px; /* Kembalikan ke ukuran normal di mobile */
+        }
+        .sidebar.collapsed .logo-text {
+          opacity: 1;
+          display: inline; /* Tampilkan teks logo */
+        }
+        .sidebar.collapsed .nav-link span {
+          display: inline; /* Tampilkan teks menu */
+        }
+      }
 
+      @media (max-width: 768px) {
+        .header {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 15px;
+        }
         .search-bar {
           width: 100%;
         }
-
-        .header {
+        .user-info {
+          justify-content: space-between;
+        }
+        .dashboard-cards {
+          grid-template-columns: 1fr;
+        }
+        .table-header {
           flex-direction: column;
-          gap: 15px;
+          align-items: stretch;
+        }
+        .table-header div {
+          display: flex;
+          justify-content: center;
+          gap: 10px;
+          margin-top: 10px;
+        }
+        .filter-row {
+          flex-direction: column;
+        }
+        .filter-group {
+          width: 100%;
+        }
+        .attendance-summary {
+          flex-direction: column;
+        }
+        .pagination-container {
+          flex-direction: column;
+          align-items: center;
         }
       }
     </style>
@@ -773,7 +771,7 @@
           <i class="bi bi-mosque"></i>
           <span class="logo-text">Pesantren</span>
         </a>
-        <button class="toggle-btn" onclick="toggleSidebar()">
+        <button class="toggle-btn d-none d-lg-block" onclick="toggleSidebar()">
           <i class="bi bi-list"></i>
         </button>
       </div>
@@ -845,6 +843,10 @@
     <main class="main-content" id="mainContent">
       <!-- Header -->
       <header class="header">
+        <!-- MODIFIKASI: Tambahkan Tombol Hamburger untuk Mobile -->
+        <button class="mobile-toggle-btn d-lg-none" onclick="toggleMobileSidebar()">
+          <i class="bi bi-list"></i>
+        </button>
         <div class="search-bar">
           <input type="text" placeholder="Cari data..." />
           <i class="bi bi-search"></i>
@@ -1814,7 +1816,7 @@
       </div>
     </div>
 
-    <!-- Toast Container -->
+    <!-- Toast Container - Tidak digunakan lagi -->
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- Library untuk export PDF dan Excel -->
@@ -1844,34 +1846,24 @@
         laporan: { page: 1, pageSize: 10, count: 0 },
       };
 
-      // Fungsi untuk menampilkan toast
+      // MODIFIKASI: Fungsi untuk menampilkan toast menggunakan SweetAlert2
       function showToast(message, type = "success") {
-        const toastContainer = document.getElementById("toastContainer");
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
+        })
 
-        const toast = document.createElement("div");
-        toast.className = `toast ${type}`;
-
-        let icon = "";
-        if (type === "success")
-          icon = '<i class="bi bi-check-circle-fill toast-icon"></i>';
-        else if (type === "error")
-          icon = '<i class="bi bi-x-circle-fill toast-icon"></i>';
-        else if (type === "warning")
-          icon = '<i class="bi bi-exclamation-triangle-fill toast-icon"></i>';
-
-        toast.innerHTML = `
-                ${icon}
-                <div class="toast-message">${message}</div>
-                <button class="toast-close" onclick="this.parentElement.remove()">
-                    <i class="bi bi-x"></i>
-                </button>
-            `;
-
-        toastContainer.appendChild(toast);
-
-        setTimeout(() => {
-          toast.remove();
-        }, 5000);
+        Toast.fire({
+          icon: type,
+          title: message
+        });
       }
 
       // Fungsi untuk menampilkan/menyembunyikan loading indicator
@@ -1890,8 +1882,12 @@
         const errorDiv = document.getElementById("loginError");
 
         if (!email || !password) {
-          errorDiv.textContent = "Email dan password harus diisi";
-          errorDiv.classList.remove("d-none");
+          // MODIFIKASI: Ganti alert dengan SweetAlert
+          Swal.fire({
+            icon: 'warning',
+            title: 'Peringatan',
+            text: 'Email dan password harus diisi',
+          });
           return;
         }
 
@@ -1904,8 +1900,12 @@
           });
 
           if (error) {
-            errorDiv.textContent = error.message;
-            errorDiv.classList.remove("d-none");
+            // MODIFIKASI: Ganti alert dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Login Gagal',
+              text: error.message,
+            });
             hideLoading();
             return;
           }
@@ -1913,7 +1913,14 @@
           // Login berhasil
           currentUser = data.user;
           closeModal("loginModal");
-          showToast("Login berhasil!", "success");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: 'Login berhasil!',
+            timer: 1500,
+            showConfirmButton: false
+          });
 
           // Load data user
           await loadUserProfile();
@@ -1921,8 +1928,12 @@
           // Load data dashboard saja saat awal
           await loadDashboardData();
         } catch (err) {
-          errorDiv.textContent = "Terjadi kesalahan saat login";
-          errorDiv.classList.remove("d-none");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat login',
+          });
         } finally {
           hideLoading();
         }
@@ -1930,13 +1941,35 @@
 
       // Fungsi logout yang diperbaiki
       async function logout() {
+        // MODIFIKASI: Ganti confirm dengan SweetAlert
+        const result = await Swal.fire({
+          title: 'Konfirmasi Logout',
+          text: "Apakah Anda yakin ingin keluar?",
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Ya, keluar!'
+        });
+
+        if (!result.isConfirmed) {
+          return;
+        }
+
         try {
           showLoading();
           await supabase.auth.signOut();
           // Tunggu sebentar agar onAuthStateChange selesai diproses
           setTimeout(() => {
             currentUser = null;
-            showToast("Logout berhasil!", "success");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'success',
+              title: 'Berhasil!',
+              text: 'Logout berhasil!',
+              timer: 1500,
+              showConfirmButton: false
+            });
             // Pastikan modal login ditampilkan
             const loginModal = document.getElementById("loginModal");
             loginModal.classList.add("active");
@@ -1944,7 +1977,12 @@
           }, 500);
         } catch (error) {
           console.error("Error during logout:", error);
-          showToast("Gagal logout", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Gagal logout',
+          });
           hideLoading();
         }
       }
@@ -1976,11 +2014,20 @@
       }
 
       // OPTIMASI: Hanya memuat data yang diperlukan untuk dashboard
+     
       async function loadDashboardData() {
         showLoading();
         try {
-          const currentMonth = new Date().getMonth();
-          const currentYear = new Date().getFullYear();
+          const today = new Date();
+          const currentMonth = today.getMonth();
+          const currentYear = today.getFullYear();
+
+          // MODIFIKASI: Buat tanggal dalam format YYYY-MM-DD yang bisa dibaca Supabase
+          const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+          const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
+
+          const startDateString = firstDayOfMonth.toISOString().split('T')[0];
+          const endDateString = lastDayOfMonth.toISOString().split('T')[0];
 
           // Gunakan count untuk menghemat bandwidth, kita hanya butuh jumlahnya
           const [
@@ -1994,32 +2041,38 @@
             supabase
               .from("kegiatan")
               .select("id")
-              .gte("tanggal", new Date(currentYear, currentMonth, 1))
-              .lte("tanggal", new Date(currentYear, currentMonth + 1, 0)),
+              .gte("tanggal", startDateString) // MODIFIKASI: Gunakan string
+              .lte("tanggal", endDateString),   // MODIFIKASI: Gunakan string
             supabase
               .from("transaksi")
               .select("jumlah")
               .eq("jenis", "pemasukan")
-              .gte("tanggal", new Date(currentYear, currentMonth, 1))
-              .lte("tanggal", new Date(currentYear, currentMonth + 1, 0)),
+              .gte("tanggal", startDateString) // MODIFIKASI: Gunakan string
+              .lte("tanggal", endDateString),   // MODIFIKASI: Gunakan string
           ]);
 
           // Update dashboard
           document.getElementById("totalSantriCount").textContent = santriCount || 0;
           document.getElementById("totalGuruCount").textContent = guruCount || 0;
+          
+          // MODIFIKASI: Tambahkan pengecekan untuk mencegah error jika data null
           document.getElementById("totalKegiatanCount").textContent =
-            kegiatanData.length || 0;
+            (kegiatanData && kegiatanData.length) ? kegiatanData.length : 0;
 
-          const totalPemasukan = transaksiData.reduce(
-            (sum, t) => sum + parseFloat(t.jumlah),
-            0
-          );
+          const totalPemasukan = (transaksiData && transaksiData.length)
+            ? transaksiData.reduce((sum, t) => sum + parseFloat(t.jumlah), 0)
+            : 0;
+            
           document.getElementById(
             "totalPemasukanCount"
           ).textContent = `Rp ${formatNumber(totalPemasukan)}`;
         } catch (err) {
           console.error("Error loading dashboard data:", err);
-          showToast("Terjadi kesalahan saat memuat data dashboard", "error");
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat memuat data dashboard',
+          });
         } finally {
           hideLoading();
         }
@@ -2045,7 +2098,12 @@
 
           if (error) {
             console.error("Error loading santri:", error);
-            showToast("Error loading santri: " + error.message, "error");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error loading santri: ' + error.message,
+            });
             return;
           }
 
@@ -2056,7 +2114,12 @@
           updatePagination('santri');
         } catch (err) {
           console.error("Error loading santri:", err);
-          showToast("Terjadi kesalahan saat memuat data santri", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat memuat data santri',
+          });
         } finally {
           hideLoading();
         }
@@ -2110,7 +2173,12 @@
 
           if (error) {
             console.error("Error loading guru:", error);
-            showToast("Error loading guru: " + error.message, "error");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error loading guru: ' + error.message,
+            });
             return;
           }
 
@@ -2121,7 +2189,12 @@
           updatePagination('guru');
         } catch (err) {
           console.error("Error loading guru:", err);
-          showToast("Terjadi kesalahan saat memuat data guru", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat memuat data guru',
+          });
         } finally {
           hideLoading();
         }
@@ -2168,7 +2241,12 @@
 
           if (error) {
             console.error("Error loading kelas:", error);
-            showToast("Error loading kelas: " + error.message, "error");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error loading kelas: ' + error.message,
+            });
             return;
           }
 
@@ -2176,7 +2254,12 @@
           updateKelasOptions();
         } catch (err) {
           console.error("Error loading kelas:", err);
-          showToast("Terjadi kesalahan saat memuat data kelas", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat memuat data kelas',
+          });
         }
       }
 
@@ -2214,7 +2297,12 @@
 
           if (error) {
             console.error("Error loading kegiatan:", error);
-            showToast("Error loading kegiatan: " + error.message, "error");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error loading kegiatan: ' + error.message,
+            });
             return;
           }
 
@@ -2225,7 +2313,12 @@
           updatePagination('kegiatan');
         } catch (err) {
           console.error("Error loading kegiatan:", err);
-          showToast("Terjadi kesalahan saat memuat data kegiatan", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat memuat data kegiatan',
+          });
         } finally {
           hideLoading();
         }
@@ -2277,7 +2370,12 @@
 
           if (error) {
             console.error("Error loading fasilitas:", error);
-            showToast("Error loading fasilitas: " + error.message, "error");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error loading fasilitas: ' + error.message,
+            });
             return;
           }
 
@@ -2288,7 +2386,12 @@
           updatePagination('fasilitas');
         } catch (err) {
           console.error("Error loading fasilitas:", err);
-          showToast("Terjadi kesalahan saat memuat data fasilitas", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat memuat data fasilitas',
+          });
         } finally {
           hideLoading();
         }
@@ -2340,7 +2443,12 @@
 
           if (error) {
             console.error("Error loading transaksi:", error);
-            showToast("Error loading transaksi: " + error.message, "error");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error loading transaksi: ' + error.message,
+            });
             return;
           }
 
@@ -2351,7 +2459,12 @@
           updatePagination('transaksi');
         } catch (err) {
           console.error("Error loading transaksi:", err);
-          showToast("Terjadi kesalahan saat memuat data transaksi", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat memuat data transaksi',
+          });
         } finally {
           hideLoading();
         }
@@ -2405,7 +2518,12 @@
 
           if (error) {
             console.error("Error loading laporan:", error);
-            showToast("Error loading laporan: " + error.message, "error");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error loading laporan: ' + error.message,
+            });
             return;
           }
 
@@ -2416,7 +2534,12 @@
           updatePagination('laporan');
         } catch (err) {
           console.error("Error loading laporan:", err);
-          showToast("Terjadi kesalahan saat memuat data laporan", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat memuat data laporan',
+          });
         } finally {
           hideLoading();
         }
@@ -2461,7 +2584,12 @@
 
           if (error) {
             console.error("Error loading pengaturan:", error);
-            showToast("Error loading pengaturan: " + error.message, "error");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error loading pengaturan: ' + error.message,
+            });
             return;
           }
 
@@ -2474,7 +2602,12 @@
           updatePengaturanForm();
         } catch (err) {
           console.error("Error loading pengaturan:", err);
-          showToast("Terjadi kesalahan saat memuat data pengaturan", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat memuat data pengaturan',
+          });
         }
       }
 
@@ -2504,7 +2637,12 @@
         const status = document.getElementById("santriStatus").value;
 
         if (!nis || !fullName || !kelasId) {
-          showToast("Mohon lengkapi semua field yang diperlukan", "warning");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'warning',
+            title: 'Peringatan',
+            text: 'Mohon lengkapi semua field yang diperlukan',
+          });
           return;
         }
 
@@ -2547,14 +2685,23 @@
           }
 
           if (result.error) {
-            showToast("Error: " + result.error.message, "error");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error: ' + result.error.message,
+            });
             return;
           }
 
-          showToast(
-            `Data santri berhasil ${id ? "diperbarui" : "disimpan"}!`,
-            "success"
-          );
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: `Data santri berhasil ${id ? "diperbarui" : "disimpan"}!`,
+            timer: 1500,
+            showConfirmButton: false
+          });
           closeModal("santriModal");
 
           // Clear form
@@ -2572,7 +2719,12 @@
           // Reload data
           await loadSantri(paginationState.santri.page);
         } catch (err) {
-          showToast("Terjadi kesalahan saat menyimpan data", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat menyimpan data',
+          });
         } finally {
           hideLoading();
         }
@@ -2590,7 +2742,12 @@
             .single();
 
           if (error) {
-            showToast("Error: " + error.message, "error");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error: ' + error.message,
+            });
             hideLoading();
             return;
           }
@@ -2617,7 +2774,12 @@
           // Open modal
           openModal("santriModal");
         } catch (err) {
-          showToast("Terjadi kesalahan saat memuat data santri", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat memuat data santri',
+          });
         } finally {
           hideLoading();
         }
@@ -2625,7 +2787,18 @@
 
       // Fungsi delete santri
       async function deleteSantri(id) {
-        if (!confirm("Apakah Anda yakin ingin menghapus data santri ini?")) {
+        // MODIFIKASI: Ganti confirm dengan SweetAlert
+        const result = await Swal.fire({
+          title: 'Konfirmasi Hapus',
+          text: "Apakah Anda yakin ingin menghapus data santri ini?",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Ya, hapus!'
+        });
+
+        if (!result.isConfirmed) {
           return;
         }
 
@@ -2635,16 +2808,33 @@
           const { error } = await supabase.from("santri").delete().eq("id", id);
 
           if (error) {
-            showToast("Error: " + error.message, "error");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error: ' + error.message,
+            });
             return;
           }
 
-          showToast("Data santri berhasil dihapus!", "success");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: 'Data santri berhasil dihapus!',
+            timer: 1500,
+            showConfirmButton: false
+          });
 
           // Reload data
           await loadSantri(paginationState.santri.page);
         } catch (err) {
-          showToast("Terjadi kesalahan saat menghapus data", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat menghapus data',
+          });
         } finally {
           hideLoading();
         }
@@ -2662,7 +2852,12 @@
         const status = document.getElementById("pengajarStatus").value;
 
         if (!nip || !fullName || !subject) {
-          showToast("Mohon lengkapi semua field yang diperlukan", "warning");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'warning',
+            title: 'Peringatan',
+            text: 'Mohon lengkapi semua field yang diperlukan',
+          });
           return;
         }
 
@@ -2701,14 +2896,23 @@
           }
 
           if (result.error) {
-            showToast("Error: " + result.error.message, "error");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error: ' + result.error.message,
+            });
             return;
           }
 
-          showToast(
-            `Data guru berhasil ${id ? "diperbarui" : "disimpan"}!`,
-            "success"
-          );
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: `Data guru berhasil ${id ? "diperbarui" : "disimpan"}!`,
+            timer: 1500,
+            showConfirmButton: false
+          });
           closeModal("pengajarModal");
 
           // Clear form
@@ -2724,7 +2928,12 @@
           // Reload data
           await loadGuru(paginationState.guru.page);
         } catch (err) {
-          showToast("Terjadi kesalahan saat menyimpan data", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat menyimpan data',
+          });
         } finally {
           hideLoading();
         }
@@ -2742,7 +2951,12 @@
             .single();
 
           if (error) {
-            showToast("Error: " + error.message, "error");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error: ' + error.message,
+            });
             hideLoading();
             return;
           }
@@ -2766,7 +2980,12 @@
           // Open modal
           openModal("pengajarModal");
         } catch (err) {
-          showToast("Terjadi kesalahan saat memuat data guru", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat memuat data guru',
+          });
         } finally {
           hideLoading();
         }
@@ -2774,7 +2993,18 @@
 
       // Fungsi delete guru
       async function deleteGuru(id) {
-        if (!confirm("Apakah Anda yakin ingin menghapus data guru ini?")) {
+        // MODIFIKASI: Ganti confirm dengan SweetAlert
+        const result = await Swal.fire({
+          title: 'Konfirmasi Hapus',
+          text: "Apakah Anda yakin ingin menghapus data guru ini?",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Ya, hapus!'
+        });
+
+        if (!result.isConfirmed) {
           return;
         }
 
@@ -2784,16 +3014,33 @@
           const { error } = await supabase.from("guru").delete().eq("id", id);
 
           if (error) {
-            showToast("Error: " + error.message, "error");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error: ' + error.message,
+            });
             return;
           }
 
-          showToast("Data guru berhasil dihapus!", "success");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: 'Data guru berhasil dihapus!',
+            timer: 1500,
+            showConfirmButton: false
+          });
 
           // Reload data
           await loadGuru(paginationState.guru.page);
         } catch (err) {
-          showToast("Terjadi kesalahan saat menghapus data", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat menghapus data',
+          });
         } finally {
           hideLoading();
         }
@@ -2811,7 +3058,12 @@
         const description = document.getElementById("kegiatanDeskripsi").value;
 
         if (!name || !date || !location) {
-          showToast("Mohon lengkapi semua field yang diperlukan", "warning");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'warning',
+            title: 'Peringatan',
+            text: 'Mohon lengkapi semua field yang diperlukan',
+          });
           return;
         }
 
@@ -2850,14 +3102,23 @@
           }
 
           if (result.error) {
-            showToast("Error: " + result.error.message, "error");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error: ' + result.error.message,
+            });
             return;
           }
 
-          showToast(
-            `Data kegiatan berhasil ${id ? "diperbarui" : "disimpan"}!`,
-            "success"
-          );
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: `Data kegiatan berhasil ${id ? "diperbarui" : "disimpan"}!`,
+            timer: 1500,
+            showConfirmButton: false
+          });
           closeModal("kegiatanModal");
 
           // Clear form
@@ -2873,7 +3134,12 @@
           // Reload data
           await loadKegiatan(paginationState.kegiatan.page);
         } catch (err) {
-          showToast("Terjadi kesalahan saat menyimpan data", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat menyimpan data',
+          });
         } finally {
           hideLoading();
         }
@@ -2891,7 +3157,12 @@
             .single();
 
           if (error) {
-            showToast("Error: " + error.message, "error");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error: ' + error.message,
+            });
             hideLoading();
             return;
           }
@@ -2916,7 +3187,12 @@
           // Open modal
           openModal("kegiatanModal");
         } catch (err) {
-          showToast("Terjadi kesalahan saat memuat data kegiatan", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat memuat data kegiatan',
+          });
         } finally {
           hideLoading();
         }
@@ -2924,7 +3200,18 @@
 
       // Fungsi delete kegiatan
       async function deleteKegiatan(id) {
-        if (!confirm("Apakah Anda yakin ingin menghapus data kegiatan ini?")) {
+        // MODIFIKASI: Ganti confirm dengan SweetAlert
+        const result = await Swal.fire({
+          title: 'Konfirmasi Hapus',
+          text: "Apakah Anda yakin ingin menghapus data kegiatan ini?",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Ya, hapus!'
+        });
+
+        if (!result.isConfirmed) {
           return;
         }
 
@@ -2937,16 +3224,33 @@
             .eq("id", id);
 
           if (error) {
-            showToast("Error: " + error.message, "error");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error: ' + error.message,
+            });
             return;
           }
 
-          showToast("Data kegiatan berhasil dihapus!", "success");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: 'Data kegiatan berhasil dihapus!',
+            timer: 1500,
+            showConfirmButton: false
+          });
 
           // Reload data
           await loadKegiatan(paginationState.kegiatan.page);
         } catch (err) {
-          showToast("Terjadi kesalahan saat menghapus data", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat menghapus data',
+          });
         } finally {
           hideLoading();
         }
@@ -2963,7 +3267,12 @@
         const description = document.getElementById("fasilitasDeskripsi").value;
 
         if (!name || !capacity || !condition) {
-          showToast("Mohon lengkapi semua field yang diperlukan", "warning");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'warning',
+            title: 'Peringatan',
+            text: 'Mohon lengkapi semua field yang diperlukan',
+          });
           return;
         }
 
@@ -3000,14 +3309,23 @@
           }
 
           if (result.error) {
-            showToast("Error: " + result.error.message, "error");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error: ' + result.error.message,
+            });
             return;
           }
 
-          showToast(
-            `Data fasilitas berhasil ${id ? "diperbarui" : "disimpan"}!`,
-            "success"
-          );
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: `Data fasilitas berhasil ${id ? "diperbarui" : "disimpan"}!`,
+            timer: 1500,
+            showConfirmButton: false
+          });
           closeModal("fasilitasModal");
 
           // Clear form
@@ -3022,7 +3340,12 @@
           // Reload data
           await loadFasilitas(paginationState.fasilitas.page);
         } catch (err) {
-          showToast("Terjadi kesalahan saat menyimpan data", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat menyimpan data',
+          });
         } finally {
           hideLoading();
         }
@@ -3040,7 +3363,12 @@
             .single();
 
           if (error) {
-            showToast("Error: " + error.message, "error");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error: ' + error.message,
+            });
             hideLoading();
             return;
           }
@@ -3066,7 +3394,12 @@
           // Open modal
           openModal("fasilitasModal");
         } catch (err) {
-          showToast("Terjadi kesalahan saat memuat data fasilitas", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat memuat data fasilitas',
+          });
         } finally {
           hideLoading();
         }
@@ -3074,7 +3407,18 @@
 
       // Fungsi delete fasilitas
       async function deleteFasilitas(id) {
-        if (!confirm("Apakah Anda yakin ingin menghapus data fasilitas ini?")) {
+        // MODIFIKASI: Ganti confirm dengan SweetAlert
+        const result = await Swal.fire({
+          title: 'Konfirmasi Hapus',
+          text: "Apakah Anda yakin ingin menghapus data fasilitas ini?",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Ya, hapus!'
+        });
+
+        if (!result.isConfirmed) {
           return;
         }
 
@@ -3087,16 +3431,33 @@
             .eq("id", id);
 
           if (error) {
-            showToast("Error: " + error.message, "error");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error: ' + error.message,
+            });
             return;
           }
 
-          showToast("Data fasilitas berhasil dihapus!", "success");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: 'Data fasilitas berhasil dihapus!',
+            timer: 1500,
+            showConfirmButton: false
+          });
 
           // Reload data
           await loadFasilitas(paginationState.fasilitas.page);
         } catch (err) {
-          showToast("Terjadi kesalahan saat menghapus data", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat menghapus data',
+          });
         } finally {
           hideLoading();
         }
@@ -3114,7 +3475,12 @@
         const amount = document.getElementById("transaksiJumlah").value;
 
         if (!date || !description || !category || !type || !amount) {
-          showToast("Mohon lengkapi semua field yang diperlukan", "warning");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'warning',
+            title: 'Peringatan',
+            text: 'Mohon lengkapi semua field yang diperlukan',
+          });
           return;
         }
 
@@ -3149,14 +3515,23 @@
           }
 
           if (result.error) {
-            showToast("Error: " + result.error.message, "error");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error: ' + result.error.message,
+            });
             return;
           }
 
-          showToast(
-            `Data transaksi berhasil ${id ? "diperbarui" : "disimpan"}!`,
-            "success"
-          );
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: `Data transaksi berhasil ${id ? "diperbarui" : "disimpan"}!`,
+            timer: 1500,
+            showConfirmButton: false
+          });
           closeModal("transaksiModal");
 
           // Clear form
@@ -3170,7 +3545,12 @@
           // Reload data
           await loadTransaksi(paginationState.transaksi.page);
         } catch (err) {
-          showToast("Terjadi kesalahan saat menyimpan data", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat menyimpan data',
+          });
         } finally {
           hideLoading();
         }
@@ -3188,7 +3568,12 @@
             .single();
 
           if (error) {
-            showToast("Error: " + error.message, "error");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error: ' + error.message,
+            });
             hideLoading();
             return;
           }
@@ -3209,7 +3594,12 @@
           // Open modal
           openModal("transaksiModal");
         } catch (err) {
-          showToast("Terjadi kesalahan saat memuat data transaksi", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat memuat data transaksi',
+          });
         } finally {
           hideLoading();
         }
@@ -3217,7 +3607,18 @@
 
       // Fungsi delete transaksi
       async function deleteTransaksi(id) {
-        if (!confirm("Apakah Anda yakin ingin menghapus data transaksi ini?")) {
+        // MODIFIKASI: Ganti confirm dengan SweetAlert
+        const result = await Swal.fire({
+          title: 'Konfirmasi Hapus',
+          text: "Apakah Anda yakin ingin menghapus data transaksi ini?",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Ya, hapus!'
+        });
+
+        if (!result.isConfirmed) {
           return;
         }
 
@@ -3230,16 +3631,33 @@
             .eq("id", id);
 
           if (error) {
-            showToast("Error: " + error.message, "error");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error: ' + error.message,
+            });
             return;
           }
 
-          showToast("Data transaksi berhasil dihapus!", "success");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: 'Data transaksi berhasil dihapus!',
+            timer: 1500,
+            showConfirmButton: false
+          });
 
           // Reload data
           await loadTransaksi(paginationState.transaksi.page);
         } catch (err) {
-          showToast("Terjadi kesalahan saat menghapus data", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat menghapus data',
+          });
         } finally {
           hideLoading();
         }
@@ -3263,12 +3681,24 @@
           await updateSetting("email", email);
           await updateSetting("telepon", telepon);
 
-          showToast("Pengaturan berhasil disimpan!", "success");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: 'Pengaturan berhasil disimpan!',
+            timer: 1500,
+            showConfirmButton: false
+          });
 
           // Reload data
           await loadPengaturan();
         } catch (err) {
-          showToast("Terjadi kesalahan saat menyimpan pengaturan", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat menyimpan pengaturan',
+          });
         } finally {
           hideLoading();
         }
@@ -3402,7 +3832,12 @@
           updateGuruSummary();
         } catch (err) {
           console.error("Error loading absen guru:", err);
-          showToast("Terjadi kesalahan saat memuat data absensi", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat memuat data absensi',
+          });
         } finally {
           hideLoading();
         }
@@ -3508,7 +3943,12 @@
           updateSantriSummary();
         } catch (err) {
           console.error("Error loading absen santri:", err);
-          showToast("Terjadi kesalahan saat memuat data absensi", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat memuat data absensi',
+          });
         } finally {
           hideLoading();
         }
@@ -3520,7 +3960,12 @@
         const waktu = document.getElementById("absenWaktu").value;
 
         if (!tanggal) {
-          showToast("Mohon pilih tanggal absen", "warning");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'warning',
+            title: 'Peringatan',
+            text: 'Mohon pilih tanggal absen',
+          });
           return;
         }
 
@@ -3560,13 +4005,30 @@
             });
 
           if (error) {
-            showToast("Error: " + error.message, "error");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error: ' + error.message,
+            });
             return;
           }
 
-          showToast("Absen guru berhasil disimpan!", "success");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: 'Absen guru berhasil disimpan!',
+            timer: 1500,
+            showConfirmButton: false
+          });
         } catch (err) {
-          showToast("Terjadi kesalahan saat menyimpan absen", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat menyimpan absen',
+          });
         } finally {
           hideLoading();
         }
@@ -3578,7 +4040,12 @@
         const waktu = document.getElementById("absenWaktu").value;
 
         if (!tanggal) {
-          showToast("Mohon pilih tanggal absen", "warning");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'warning',
+            title: 'Peringatan',
+            text: 'Mohon pilih tanggal absen',
+          });
           return;
         }
 
@@ -3618,13 +4085,30 @@
             });
 
           if (error) {
-            showToast("Error: " + error.message, "error");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error: ' + error.message,
+            });
             return;
           }
 
-          showToast("Absen santri berhasil disimpan!", "success");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: 'Absen santri berhasil disimpan!',
+            timer: 1500,
+            showConfirmButton: false
+          });
         } catch (err) {
-          showToast("Terjadi kesalahan saat menyimpan absen", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat menyimpan absen',
+          });
         } finally {
           hideLoading();
         }
@@ -3738,7 +4222,12 @@
         `)
           .then(({ data, error }) => {
             if (error) {
-              showToast("Error loading data for export: " + error.message, "error");
+              // MODIFIKASI: Ganti showToast dengan SweetAlert
+              Swal.fire({
+                icon: 'error',
+                title: 'Kesalahan',
+                text: 'Error loading data for export: ' + error.message,
+              });
               hideLoading();
               return;
             }
@@ -3776,7 +4265,14 @@
 
             // Save PDF
             doc.save("data_santri.pdf");
-            showToast("Export PDF berhasil!", "success");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'success',
+              title: 'Berhasil!',
+              text: 'Export PDF berhasil!',
+              timer: 1500,
+              showConfirmButton: false
+            });
             hideLoading();
           });
       }
@@ -3814,7 +4310,12 @@
           .select("*")
           .then(({ data, error }) => {
             if (error) {
-              showToast("Error loading data for export: " + error.message, "error");
+              // MODIFIKASI: Ganti showToast dengan SweetAlert
+              Swal.fire({
+                icon: 'error',
+                title: 'Kesalahan',
+                text: 'Error loading data for export: ' + error.message,
+              });
               hideLoading();
               return;
             }
@@ -3852,7 +4353,14 @@
 
             // Save PDF
             doc.save("data_guru.pdf");
-            showToast("Export PDF berhasil!", "success");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'success',
+              title: 'Berhasil!',
+              text: 'Export PDF berhasil!',
+              timer: 1500,
+              showConfirmButton: false
+            });
             hideLoading();
           });
       }
@@ -3933,7 +4441,14 @@
 
         // Save PDF
         doc.save(`absensi_${type}_${tanggal}.pdf`);
-        showToast("Export PDF berhasil!", "success");
+        // MODIFIKASI: Ganti showToast dengan SweetAlert
+        Swal.fire({
+          icon: 'success',
+          title: 'Berhasil!',
+          text: 'Export PDF berhasil!',
+          timer: 1500,
+          showConfirmButton: false
+        });
       }
 
       // Fungsi export PDF untuk data kegiatan
@@ -3969,7 +4484,12 @@
           .select("*")
           .then(({ data, error }) => {
             if (error) {
-              showToast("Error loading data for export: " + error.message, "error");
+              // MODIFIKASI: Ganti showToast dengan SweetAlert
+              Swal.fire({
+                icon: 'error',
+                title: 'Kesalahan',
+                text: 'Error loading data for export: ' + error.message,
+              });
               hideLoading();
               return;
             }
@@ -4003,7 +4523,14 @@
 
             // Save PDF
             doc.save("data_kegiatan.pdf");
-            showToast("Export PDF berhasil!", "success");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'success',
+              title: 'Berhasil!',
+              text: 'Export PDF berhasil!',
+              timer: 1500,
+              showConfirmButton: false
+            });
             hideLoading();
           });
       }
@@ -4041,7 +4568,12 @@
           .select("*")
           .then(({ data, error }) => {
             if (error) {
-              showToast("Error loading data for export: " + error.message, "error");
+              // MODIFIKASI: Ganti showToast dengan SweetAlert
+              Swal.fire({
+                icon: 'error',
+                title: 'Kesalahan',
+                text: 'Error loading data for export: ' + error.message,
+              });
               hideLoading();
               return;
             }
@@ -4075,7 +4607,14 @@
 
             // Save PDF
             doc.save("data_fasilitas.pdf");
-            showToast("Export PDF berhasil!", "success");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'success',
+              title: 'Berhasil!',
+              text: 'Export PDF berhasil!',
+              timer: 1500,
+              showConfirmButton: false
+            });
             hideLoading();
           });
       }
@@ -4113,7 +4652,12 @@
           .select("*")
           .then(({ data, error }) => {
             if (error) {
-              showToast("Error loading data for export: " + error.message, "error");
+              // MODIFIKASI: Ganti showToast dengan SweetAlert
+              Swal.fire({
+                icon: 'error',
+                title: 'Kesalahan',
+                text: 'Error loading data for export: ' + error.message,
+              });
               hideLoading();
               return;
             }
@@ -4151,7 +4695,14 @@
 
             // Save PDF
             doc.save("data_transaksi.pdf");
-            showToast("Export PDF berhasil!", "success");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'success',
+              title: 'Berhasil!',
+              text: 'Export PDF berhasil!',
+              timer: 1500,
+              showConfirmButton: false
+            });
             hideLoading();
           });
       }
@@ -4171,7 +4722,12 @@
         `)
           .then(({ data, error }) => {
             if (error) {
-              showToast("Error loading data for export: " + error.message, "error");
+              // MODIFIKASI: Ganti showToast dengan SweetAlert
+              Swal.fire({
+                icon: 'error',
+                title: 'Kesalahan',
+                text: 'Error loading data for export: ' + error.message,
+              });
               hideLoading();
               return;
             }
@@ -4216,7 +4772,14 @@
 
             // Export file
             XLSX.writeFile(wb, "data_santri.xlsx");
-            showToast("Export Excel berhasil!", "success");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'success',
+              title: 'Berhasil!',
+              text: 'Export Excel berhasil!',
+              timer: 1500,
+              showConfirmButton: false
+            });
             hideLoading();
           });
       }
@@ -4230,7 +4793,12 @@
           .select("*")
           .then(({ data, error }) => {
             if (error) {
-              showToast("Error loading data for export: " + error.message, "error");
+              // MODIFIKASI: Ganti showToast dengan SweetAlert
+              Swal.fire({
+                icon: 'error',
+                title: 'Kesalahan',
+                text: 'Error loading data for export: ' + error.message,
+              });
               hideLoading();
               return;
             }
@@ -4271,7 +4839,14 @@
 
             // Export file
             XLSX.writeFile(wb, "data_guru.xlsx");
-            showToast("Export Excel berhasil!", "success");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'success',
+              title: 'Berhasil!',
+              text: 'Export Excel berhasil!',
+              timer: 1500,
+              showConfirmButton: false
+            });
             hideLoading();
           });
       }
@@ -4332,7 +4907,14 @@
 
         // Export file
         XLSX.writeFile(wb, `absensi_${type}_${tanggal}.xlsx`);
-        showToast("Export Excel berhasil!", "success");
+        // MODIFIKASI: Ganti showToast dengan SweetAlert
+        Swal.fire({
+          icon: 'success',
+          title: 'Berhasil!',
+          text: 'Export Excel berhasil!',
+          timer: 1500,
+          showConfirmButton: false
+        });
       }
 
       // Fungsi export Excel untuk data kegiatan
@@ -4344,7 +4926,12 @@
           .select("*")
           .then(({ data, error }) => {
             if (error) {
-              showToast("Error loading data for export: " + error.message, "error");
+              // MODIFIKASI: Ganti showToast dengan SweetAlert
+              Swal.fire({
+                icon: 'error',
+                title: 'Kesalahan',
+                text: 'Error loading data for export: ' + error.message,
+              });
               hideLoading();
               return;
             }
@@ -4385,7 +4972,14 @@
 
             // Export file
             XLSX.writeFile(wb, "data_kegiatan.xlsx");
-            showToast("Export Excel berhasil!", "success");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'success',
+              title: 'Berhasil!',
+              text: 'Export Excel berhasil!',
+              timer: 1500,
+              showConfirmButton: false
+            });
             hideLoading();
           });
       }
@@ -4399,7 +4993,12 @@
           .select("*")
           .then(({ data, error }) => {
             if (error) {
-              showToast("Error loading data for export: " + error.message, "error");
+              // MODIFIKASI: Ganti showToast dengan SweetAlert
+              Swal.fire({
+                icon: 'error',
+                title: 'Kesalahan',
+                text: 'Error loading data for export: ' + error.message,
+              });
               hideLoading();
               return;
             }
@@ -4442,7 +5041,14 @@
 
             // Export file
             XLSX.writeFile(wb, "data_fasilitas.xlsx");
-            showToast("Export Excel berhasil!", "success");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'success',
+              title: 'Berhasil!',
+              text: 'Export Excel berhasil!',
+              timer: 1500,
+              showConfirmButton: false
+            });
             hideLoading();
           });
       }
@@ -4456,7 +5062,12 @@
           .select("*")
           .then(({ data, error }) => {
             if (error) {
-              showToast("Error loading data for export: " + error.message, "error");
+              // MODIFIKASI: Ganti showToast dengan SweetAlert
+              Swal.fire({
+                icon: 'error',
+                title: 'Kesalahan',
+                text: 'Error loading data for export: ' + error.message,
+              });
               hideLoading();
               return;
             }
@@ -4493,224 +5104,246 @@
 
             // Export file
             XLSX.writeFile(wb, "data_transaksi.xlsx");
-            showToast("Export Excel berhasil!", "success");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'success',
+              title: 'Berhasil!',
+              text: 'Export Excel berhasil!',
+              timer: 1500,
+              showConfirmButton: false
+            });
             hideLoading();
           });
       }
 
       // Fungsi export PDF untuk laporan keuangan
       function exportLaporanKeuanganPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
 
-        // Filter transaksi bulan ini
-        const currentMonth = new Date().getMonth();
-        const currentYear = new Date().getFullYear();
+      // Filter transaksi bulan ini
+      const today = new Date();
+      const currentMonth = today.getMonth();
+      const currentYear = today.getFullYear();
 
-        showLoading();
-        supabase
-          .from("transaksi")
-          .select("*")
-          .gte("tanggal", new Date(currentYear, currentMonth, 1))
-          .lte("tanggal", new Date(currentYear, currentMonth + 1, 0))
-          .then(({ data: transaksiThisMonth, error }) => {
-            if (error) {
-              showToast("Error loading data for report: " + error.message, "error");
-              hideLoading();
-              return;
-            }
+      // MODIFIKASI: Buat tanggal dalam format YYYY-MM-DD
+      const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+      const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
+      const startDateString = firstDayOfMonth.toISOString().split('T')[0];
+      const endDateString = lastDayOfMonth.toISOString().split('T')[0];
 
-            // Hitung total
-            const totalPemasukan = transaksiThisMonth
-              .filter((t) => t.jenis === "pemasukan")
-              .reduce((sum, t) => sum + parseFloat(t.jumlah), 0);
-            const totalPengeluaran = transaksiThisMonth
-              .filter((t) => t.jenis === "pengeluaran")
-              .reduce((sum, t) => sum + parseFloat(t.jumlah), 0);
-            const saldo = totalPemasukan - totalPengeluaran;
-
-            // Header
-            doc.setFontSize(18);
-            doc.text("Laporan Keuangan Bulanan", 14, 15);
-
-            // Periode
-            doc.setFontSize(12);
-            const monthNames = [
-              "Januari",
-              "Februari",
-              "Maret",
-              "April",
-              "Mei",
-              "Juni",
-              "Juli",
-              "Agustus",
-              "September",
-              "Oktober",
-              "November",
-              "Desember",
-            ];
-            doc.text(`Periode: ${monthNames[currentMonth]} ${currentYear}`, 14, 25);
-
-            // Ringkasan
-            doc.setFontSize(12);
-            doc.text("Ringkasan:", 14, 40);
-            doc.setFontSize(10);
-            doc.text(`Total Pemasukan: Rp ${formatNumber(totalPemasukan)}`, 20, 50);
-            doc.text(
-              `Total Pengeluaran: Rp ${formatNumber(totalPengeluaran)}`,
-              20,
-              57
-            );
-            doc.text(`Saldo: Rp ${formatNumber(saldo)}`, 20, 64);
-
-            // Tabel transaksi
-            let yPosition = 80;
-            doc.setFontSize(12);
-            doc.text("Detail Transaksi:", 14, yPosition);
-            yPosition += 10;
-
-            doc.setFontSize(10);
-            doc.text("Tanggal", 14, yPosition);
-            doc.text("Keterangan", 40, yPosition);
-            doc.text("Kategori", 100, yPosition);
-            doc.text("Jenis", 130, yPosition);
-            doc.text("Jumlah", 160, yPosition);
-
-            yPosition += 7;
-            doc.line(14, yPosition, 195, yPosition);
-            yPosition += 5;
-
-            // Data transaksi
-            transaksiThisMonth.forEach((transaksi) => {
-              if (yPosition > 270) {
-                doc.addPage();
-                yPosition = 20;
-              }
-
-              doc.setFontSize(9);
-              doc.text(formatDate(transaksi.tanggal), 14, yPosition);
-              doc.text(transaksi.keterangan.substring(0, 25), 40, yPosition);
-              doc.text(transaksi.kategori, 100, yPosition);
-              doc.text(
-                transaksi.jenis === "pemasukan" ? "Pemasukan" : "Pengeluaran",
-                130,
-                yPosition
-              );
-              doc.text(`Rp ${formatNumber(transaksi.jumlah)}`, 160, yPosition);
-
-              yPosition += 6;
+      showLoading();
+      supabase
+        .from("transaksi")
+        .select("*")
+        .gte("tanggal", startDateString) // MODIFIKASI: Gunakan string
+        .lte("tanggal", endDateString)   // MODIFIKASI: Gunakan string
+        .then(({ data: transaksiThisMonth, error }) => {
+          if (error) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error loading data for report: ' + error.message,
             });
-
-            // Footer
-            const pageCount = doc.internal.getNumberOfPages();
-            for (let i = 1; i <= pageCount; i++) {
-              doc.setPage(i);
-              doc.setFontSize(8);
-              doc.text(`Halaman ${i} dari ${pageCount}`, 105, 285, {
-                align: "center",
-              });
-            }
-
-            // Save PDF
-            doc.save(
-              `laporan_keuangan_${monthNames[currentMonth]}_${currentYear}.pdf`
-            );
-            showToast("Export PDF laporan keuangan berhasil!", "success");
             hideLoading();
+            return;
+          }
+
+          // MODIFIKASI: Tambahkan pengecekan jika data tidak ada
+          if (!transaksiThisMonth || transaksiThisMonth.length === 0) {
+            Swal.fire({
+              icon: 'info',
+              title: 'Informasi',
+              text: 'Tidak ada transaksi pada periode ini.',
+            });
+            hideLoading();
+            return;
+          }
+
+          // ... sisa kode fungsi tetap sama ...
+          // Hitung total
+          const totalPemasukan = transaksiThisMonth
+            .filter((t) => t.jenis === "pemasukan")
+            .reduce((sum, t) => sum + parseFloat(t.jumlah), 0);
+          const totalPengeluaran = transaksiThisMonth
+            .filter((t) => t.jenis === "pengeluaran")
+            .reduce((sum, t) => sum + parseFloat(t.jumlah), 0);
+          const saldo = totalPemasukan - totalPengeluaran;
+
+          // Header
+          doc.setFontSize(18);
+          doc.text("Laporan Keuangan Bulanan", 14, 15);
+
+          // Periode
+          doc.setFontSize(12);
+          const monthNames = [
+            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+            "Juli", "Agustus", "September", "Oktober", "November", "Desember",
+          ];
+          doc.text(`Periode: ${monthNames[currentMonth]} ${currentYear}`, 14, 25);
+
+          // ... sisa kode untuk membuat PDF tetap sama ...
+          // Ringkasan
+          doc.setFontSize(12);
+          doc.text("Ringkasan:", 14, 40);
+          doc.setFontSize(10);
+          doc.text(`Total Pemasukan: Rp ${formatNumber(totalPemasukan)}`, 20, 50);
+          doc.text(`Total Pengeluaran: Rp ${formatNumber(totalPengeluaran)}`, 20, 57);
+          doc.text(`Saldo: Rp ${formatNumber(saldo)}`, 20, 64);
+
+          // Tabel transaksi
+          let yPosition = 80;
+          doc.setFontSize(12);
+          doc.text("Detail Transaksi:", 14, yPosition);
+          yPosition += 10;
+
+          doc.setFontSize(10);
+          doc.text("Tanggal", 14, yPosition);
+          doc.text("Keterangan", 40, yPosition);
+          doc.text("Kategori", 100, yPosition);
+          doc.text("Jenis", 130, yPosition);
+          doc.text("Jumlah", 160, yPosition);
+
+          yPosition += 7;
+          doc.line(14, yPosition, 195, yPosition);
+          yPosition += 5;
+
+          // Data transaksi
+          transaksiThisMonth.forEach((transaksi) => {
+            if (yPosition > 270) {
+              doc.addPage();
+              yPosition = 20;
+            }
+            doc.setFontSize(9);
+            doc.text(formatDate(transaksi.tanggal), 14, yPosition);
+            doc.text(transaksi.keterangan.substring(0, 25), 40, yPosition);
+            doc.text(transaksi.kategori, 100, yPosition);
+            doc.text(transaksi.jenis === "pemasukan" ? "Pemasukan" : "Pengeluaran", 130, yPosition);
+            doc.text(`Rp ${formatNumber(transaksi.jumlah)}`, 160, yPosition);
+            yPosition += 6;
           });
-      }
+
+          // Footer
+          const pageCount = doc.internal.getNumberOfPages();
+          for (let i = 1; i <= pageCount; i++) {
+            doc.setPage(i);
+            doc.setFontSize(8);
+            doc.text(`Halaman ${i} dari ${pageCount}`, 105, 285, { align: "center" });
+          }
+
+          // Save PDF
+          doc.save(`laporan_keuangan_${monthNames[currentMonth]}_${currentYear}.pdf`);
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: 'Export PDF laporan keuangan berhasil!',
+            timer: 1500,
+            showConfirmButton: false
+          });
+          hideLoading();
+        });
+    }
 
       // Fungsi export Excel untuk laporan keuangan
       function exportLaporanKeuanganExcel() {
-        // Filter transaksi bulan ini
-        const currentMonth = new Date().getMonth();
-        const currentYear = new Date().getFullYear();
+      // Filter transaksi bulan ini
+      const today = new Date();
+      const currentMonth = today.getMonth();
+      const currentYear = today.getFullYear();
 
-        showLoading();
-        supabase
-          .from("transaksi")
-          .select("*")
-          .gte("tanggal", new Date(currentYear, currentMonth, 1))
-          .lte("tanggal", new Date(currentYear, currentMonth + 1, 0))
-          .then(({ data: transaksiThisMonth, error }) => {
-            if (error) {
-              showToast("Error loading data for report: " + error.message, "error");
-              hideLoading();
-              return;
-            }
+      // MODIFIKASI: Buat tanggal dalam format YYYY-MM-DD
+      const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+      const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
+      const startDateString = firstDayOfMonth.toISOString().split('T')[0];
+      const endDateString = lastDayOfMonth.toISOString().split('T')[0];
 
-            // Hitung total
-            const totalPemasukan = transaksiThisMonth
-              .filter((t) => t.jenis === "pemasukan")
-              .reduce((sum, t) => sum + parseFloat(t.jumlah), 0);
-            const totalPengeluaran = transaksiThisMonth
-              .filter((t) => t.jenis === "pengeluaran")
-              .reduce((sum, t) => sum + parseFloat(t.jumlah), 0);
-            const saldo = totalPemasukan - totalPengeluaran;
-
-            // Siapkan data ringkasan
-            const ringkasanData = [
-              { Item: "Total Pemasukan", Jumlah: totalPemasukan },
-              { Item: "Total Pengeluaran", Jumlah: totalPengeluaran },
-              { Item: "Saldo", Jumlah: saldo },
-            ];
-
-            // Siapkan data transaksi
-            const transaksiData = transaksiThisMonth.map((transaksi, index) => ({
-              No: index + 1,
-              Tanggal: formatDate(transaksi.tanggal),
-              Keterangan: transaksi.keterangan,
-              Kategori: transaksi.kategori,
-              Jenis: transaksi.jenis === "pemasukan" ? "Pemasukan" : "Pengeluaran",
-              Jumlah: transaksi.jumlah,
-            }));
-
-            // Buat workbook
-            const wb = XLSX.utils.book_new();
-
-            // Buat worksheet ringkasan
-            const wsRingkasan = XLSX.utils.json_to_sheet(ringkasanData);
-            wsRingkasan["!cols"] = [
-              { wch: 20 }, // Item
-              { wch: 15 }, // Jumlah
-            ];
-            XLSX.utils.book_append_sheet(wb, wsRingkasan, "Ringkasan");
-
-            // Buat worksheet transaksi
-            const wsTransaksi = XLSX.utils.json_to_sheet(transaksiData);
-            wsTransaksi["!cols"] = [
-              { wch: 5 }, // No
-              { wch: 15 }, // Tanggal
-              { wch: 30 }, // Keterangan
-              { wch: 15 }, // Kategori
-              { wch: 10 }, // Jenis
-              { wch: 15 }, // Jumlah
-            ];
-            XLSX.utils.book_append_sheet(wb, wsTransaksi, "Detail Transaksi");
-
-            // Export file
-            const monthNames = [
-              "Januari",
-              "Februari",
-              "Maret",
-              "April",
-              "Mei",
-              "Juni",
-              "Juli",
-              "Agustus",
-              "September",
-              "Oktober",
-              "November",
-              "Desember",
-            ];
-            XLSX.writeFile(
-              wb,
-              `laporan_keuangan_${monthNames[currentMonth]}_${currentYear}.xlsx`
-            );
-            showToast("Export Excel laporan keuangan berhasil!", "success");
+      showLoading();
+      supabase
+        .from("transaksi")
+        .select("*")
+        .gte("tanggal", startDateString) // MODIFIKASI: Gunakan string
+        .lte("tanggal", endDateString)   // MODIFIKASI: Gunakan string
+        .then(({ data: transaksiThisMonth, error }) => {
+          if (error) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error loading data for report: ' + error.message,
+            });
             hideLoading();
+            return;
+          }
+
+          // MODIFIKASI: Tambahkan pengecekan jika data tidak ada
+          if (!transaksiThisMonth || transaksiThisMonth.length === 0) {
+            Swal.fire({
+              icon: 'info',
+              title: 'Informasi',
+              text: 'Tidak ada transaksi pada periode ini.',
+            });
+            hideLoading();
+            return;
+          }
+
+          // ... sisa kode fungsi tetap sama ...
+          // Hitung total
+          const totalPemasukan = transaksiThisMonth
+            .filter((t) => t.jenis === "pemasukan")
+            .reduce((sum, t) => sum + parseFloat(t.jumlah), 0);
+          const totalPengeluaran = transaksiThisMonth
+            .filter((t) => t.jenis === "pengeluaran")
+            .reduce((sum, t) => sum + parseFloat(t.jumlah), 0);
+          const saldo = totalPemasukan - totalPengeluaran;
+
+          // Siapkan data ringkasan
+          const ringkasanData = [
+            { Item: "Total Pemasukan", Jumlah: totalPemasukan },
+            { Item: "Total Pengeluaran", Jumlah: totalPengeluaran },
+            { Item: "Saldo", Jumlah: saldo },
+          ];
+
+          // Siapkan data transaksi
+          const transaksiData = transaksiThisMonth.map((transaksi, index) => ({
+            No: index + 1,
+            Tanggal: formatDate(transaksi.tanggal),
+            Keterangan: transaksi.keterangan,
+            Kategori: transaksi.kategori,
+            Jenis: transaksi.jenis === "pemasukan" ? "Pemasukan" : "Pengeluaran",
+            Jumlah: transaksi.jumlah,
+          }));
+
+          // Buat workbook
+          const wb = XLSX.utils.book_new();
+
+          // Buat worksheet ringkasan
+          const wsRingkasan = XLSX.utils.json_to_sheet(ringkasanData);
+          wsRingkasan["!cols"] = [{ wch: 20 }, { wch: 15 }];
+          XLSX.utils.book_append_sheet(wb, wsRingkasan, "Ringkasan");
+
+          // Buat worksheet transaksi
+          const wsTransaksi = XLSX.utils.json_to_sheet(transaksiData);
+          wsTransaksi["!cols"] = [
+            { wch: 5 }, { wch: 15 }, { wch: 30 }, { wch: 15 },
+            { wch: 10 }, { wch: 15 },
+          ];
+          XLSX.utils.book_append_sheet(wb, wsTransaksi, "Detail Transaksi");
+
+          // Export file
+          const monthNames = [
+            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+            "Juli", "Agustus", "September", "Oktober", "November", "Desember",
+          ];
+          XLSX.writeFile(wb, `laporan_keuangan_${monthNames[currentMonth]}_${currentYear}.xlsx`);
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: 'Export Excel laporan keuangan berhasil!',
+            timer: 1500,
+            showConfirmButton: false
           });
-      }
+          hideLoading();
+        });
+    }
 
       // Fungsi generate report
       async function generateReport() {
@@ -4747,17 +5380,34 @@
           ]);
 
           if (error) {
-            showToast("Error: " + error.message, "error");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error: ' + error.message,
+            });
             hideLoading();
             return;
           }
 
-          showToast("Laporan berhasil dibuat dan sedang diproses!", "success");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: 'Laporan berhasil dibuat dan sedang diproses!',
+            timer: 1500,
+            showConfirmButton: false
+          });
 
           // Reload data
           await loadLaporan(paginationState.laporan.page);
         } catch (err) {
-          showToast("Terjadi kesalahan saat membuat laporan", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat membuat laporan',
+          });
         } finally {
           hideLoading();
         }
@@ -4776,22 +5426,44 @@
             .single();
 
           if (laporanError) {
-            showToast("Error: " + laporanError.message, "error");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error: ' + laporanError.message,
+            });
             hideLoading();
             return;
           }
 
           // Check if laporan is ready
           if (laporanData.status !== "selesai") {
-            showToast("Laporan belum siap untuk diunduh", "warning");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'warning',
+              title: 'Peringatan',
+              text: 'Laporan belum siap untuk diunduh',
+            });
             hideLoading();
             return;
           }
 
           // Download laporan
-          showToast("Laporan berhasil diunduh!", "success");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: 'Laporan berhasil diunduh!',
+            timer: 1500,
+            showConfirmButton: false
+          });
         } catch (err) {
-          showToast("Terjadi kesalahan saat mengunduh laporan", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat mengunduh laporan',
+          });
         } finally {
           hideLoading();
         }
@@ -4810,22 +5482,44 @@
             .single();
 
           if (laporanError) {
-            showToast("Error: " + laporanError.message, "error");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'error',
+              title: 'Kesalahan',
+              text: 'Error: ' + laporanError.message,
+            });
             hideLoading();
             return;
           }
 
           // Check if laporan is ready
           if (laporanData.status !== "selesai") {
-            showToast("Laporan belum siap untuk dilihat", "warning");
+            // MODIFIKASI: Ganti showToast dengan SweetAlert
+            Swal.fire({
+              icon: 'warning',
+              title: 'Peringatan',
+              text: 'Laporan belum siap untuk dilihat',
+            });
             hideLoading();
             return;
           }
 
           // View laporan
-          showToast("Laporan berhasil dibuka!", "success");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: 'Laporan berhasil dibuka!',
+            timer: 1500,
+            showConfirmButton: false
+          });
         } catch (err) {
-          showToast("Terjadi kesalahan saat membuka laporan", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat membuka laporan',
+          });
         } finally {
           hideLoading();
         }
@@ -4982,6 +5676,12 @@
         mainContent.classList.toggle("expanded");
       }
 
+      // MODIFIKASI: Fungsi untuk toggle sidebar di mobile
+      function toggleMobileSidebar() {
+        const sidebar = document.getElementById("sidebar");
+        sidebar.classList.toggle("active");
+      }
+
       // OPTIMASI: Fungsi showSection dengan lazy loading
       async function showSection(sectionId) {
         // Hide all sections
@@ -4999,6 +5699,12 @@
           link.classList.remove("active");
         });
         event.target.closest(".nav-link").classList.add("active");
+
+        // MODIFIKASI: Tutup sidebar di mobile setelah navigasi
+        if (window.innerWidth <= 992) {
+          const sidebar = document.getElementById("sidebar");
+          sidebar.classList.remove("active");
+        }
 
         // Lazy load data based on section
         showLoading();
@@ -5036,7 +5742,12 @@
               break;
           }
         } catch (err) {
-          showToast("Terjadi kesalahan saat memuat data", "error");
+          // MODIFIKASI: Ganti showToast dengan SweetAlert
+          Swal.fire({
+            icon: 'error',
+            title: 'Kesalahan',
+            text: 'Terjadi kesalahan saat memuat data',
+          });
         } finally {
           hideLoading();
         }
